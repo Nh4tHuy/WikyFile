@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Sapphire Scan & PDF Studio - Quét Tài Liệu Chuyên Nghiệp AI Copilot</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        sapphire: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#1558C9',
+                            600: '#1047a7',
+                            700: '#0c357d',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Cropper.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <!-- jsPDF & SortableJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Default Light Mode Theme & Dark Mode Overrides */
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #eef2ff 0%, #e0f2fe 40%, #f3e8ff 100%);
+            background-attachment: fixed;
+            color: #0f172a;
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .dark body {
+            background: linear-gradient(135deg, #030407 0%, #0a1128 50%, #030407 100%);
+            color: #eff6ff;
+        }
+
+        /* Glassmorphism Header & Card Styling */
+        .glass-header {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+        .dark .glass-header {
+            background: rgba(10, 16, 30, 0.8);
+            border-bottom-color: rgba(59, 130, 246, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        }
+        .dark .glass-panel {
+            background: rgba(10, 16, 30, 0.75);
+            border-color: rgba(59, 130, 246, 0.25);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .dark .glass-card {
+            background: rgba(15, 23, 42, 0.65);
+            border-color: rgba(59, 130, 246, 0.18);
+        }
+        .glass-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px -4px rgba(21, 88, 201, 0.12);
+        }
+        .dark .glass-card:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .glass-input {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(203, 213, 225, 0.8);
+            color: #0f172a;
+            transition: all 0.25s;
+        }
+        .dark .glass-input {
+            background: rgba(10, 16, 30, 0.85);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #eff6ff;
+        }
+        .glass-input:focus {
+            border-color: #1558C9;
+            box-shadow: 0 0 14px rgba(21, 88, 201, 0.3);
+            outline: none;
+        }
+
+        .sapphire-gradient-btn {
+            background: linear-gradient(135deg, #1558C9 0%, #2563eb 100%);
+            box-shadow: 0 8px 20px -4px rgba(21, 88, 201, 0.4);
+            transition: all 0.3s ease;
+        }
+        .sapphire-gradient-btn:hover {
+            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.55);
+            transform: translateY(-2px);
+            filter: brightness(1.08);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: rgba(21, 88, 201, 0.4); border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(37, 99, 235, 0.8); }
+        ::-webkit-scrollbar-track { background: transparent; }
+
+        /* Compact Scan Filters Bar */
+        .scan-filters-scroll {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 4px 2px;
+            scroll-behavior: smooth;
+        }
+        .scan-filter-item {
+            flex: 0 0 auto;
+            width: 76px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 12px;
+            padding: 6px 4px;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            background: rgba(0, 0, 0, 0.04);
+        }
+        .dark .scan-filter-item {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .scan-filter-item:hover {
+            border-color: rgba(21, 88, 201, 0.4);
+        }
+        .scan-filter-item.active {
+            border-color: #1558C9;
+            background: rgba(21, 88, 201, 0.12);
+            box-shadow: 0 0 10px rgba(21, 88, 201, 0.3);
+        }
+
+        /* Cropper custom styling */
+        .cropper-view-box {
+            outline: 2px solid #1558C9 !important;
+        }
+        .cropper-line, .cropper-point {
+            background-color: #1558C9 !important;
+        }
+
+        /* Animation Keyframes: Background Floating Up Animation */
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0.8) rotate(0deg);
+                opacity: 0;
+            }
+            20% { opacity: 0.4; }
+            80% { opacity: 0.4; }
+            100% {
+                transform: translateY(-20vh) scale(1.2) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .floating-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            pointer-events: none;
+            z-index: 0;
+            animation: floatUp 18s linear infinite;
+        }
+        .orb-1 {
+            left: 10%;
+            width: 280px;
+            height: 280px;
+            background: rgba(21, 88, 201, 0.18);
+            animation-duration: 22s;
+        }
+        .orb-2 {
+            right: 15%;
+            width: 340px;
+            height: 340px;
+            background: rgba(99, 102, 241, 0.15);
+            animation-duration: 26s;
+            animation-delay: 4s;
+        }
+        .orb-3 {
+            left: 50%;
+            width: 220px;
+            height: 220px;
+            background: rgba(56, 189, 248, 0.15);
+            animation-duration: 20s;
+            animation-delay: 9s;
+        }
+
+        /* Scroll Reveal Animations */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-on-scroll.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between relative">
+
+    <!-- BACKGROUND MOVING FLOATING ORBS -->
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+
+    <!-- NAVBAR WITH GLASS WRAPPER -->
+    <header class="sticky top-0 z-50 w-full glass-header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+            <a href="#" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-sapphire-600 to-blue-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+                    <i data-lucide="file-text" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                </div>
+                <div>
+                    <span class="font-extrabold text-base sm:text-xl tracking-tight bg-gradient-to-r from-sapphire-600 via-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-300 bg-clip-text text-transparent">
+                        Sapphire Scan Studio
+                    </span>
+                    <span class="block text-[10px] sm:text-[11px] font-semibold text-slate-500 dark:text-blue-400/80">Quét & Chuyển ảnh sang PDF AI Copilot</span>
+                </div>
+            </a>
+
+            <!-- Quick Action CTA & Theme Switcher Buttons -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <button onclick="toggleDarkMode()" class="p-2 sm:p-2.5 rounded-2xl glass-input hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center justify-center text-slate-700 dark:text-slate-200" title="Chuyển chế độ Sáng/Tối">
+                    <i data-lucide="moon" id="dark-icon" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                </button>
+
+                <!-- MAIN CTA BUTTON -->
+                <a href="#convert-section" class="sapphire-gradient-btn text-white text-xs font-extrabold px-4 py-2.5 sm:px-6 sm:py-3 rounded-2xl flex items-center space-x-2 tracking-wide uppercase shadow-lg hover:shadow-blue-500/50">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    <span>BẮT ĐẦU QUÉT NGAY</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION LANDING PAGE -->
+    <section class="relative pt-8 pb-12 lg:pt-16 lg:pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full z-10">
+        <div class="text-center max-w-3xl mx-auto space-y-5 relative z-10 reveal-on-scroll">
+            <div class="inline-flex items-center space-x-2 bg-blue-100/80 dark:bg-blue-950/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-blue-200 dark:border-blue-500/30 text-xs font-bold text-sapphire-600 dark:text-blue-400">
+                <span class="flex h-2 w-2 rounded-full bg-sapphire-500 animate-ping"></span>
+                <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                <span>Xử Lý AI Quét Nét Chữ Local 100% - Bảo Mật Tuyệt Đối</span>
+            </div>
+
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
+                Quét & Chuyển Đổi Ảnh <br>
+                <span class="bg-gradient-to-r from-sapphire-600 via-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-200 bg-clip-text text-transparent">Sang PDF Sắc Nét</span> Chuẩn Copilot
+            </h1>
+
+            <p class="text-sm sm:text-base text-slate-600 dark:text-blue-200/70 font-medium leading-relaxed">
+                Tải lên, khoanh vùng chọn quét trang tài liệu, xem trước live các bộ lọc làm rõ chữ chống mờ (B&W, Document Magic, Lighten) và xuất file PDF sắc nét.
+            </p>
+        </div>
+
+        <!-- CONVERTER STUDIO WORKSPACE -->
+        <div id="convert-section" class="mt-8 sm:mt-12 max-w-5xl mx-auto relative z-20 reveal-on-scroll">
+            <div class="glass-panel rounded-3xl p-4 sm:p-8 border border-white/80 dark:border-blue-500/30 shadow-2xl relative">
+                
+                <!-- DROP ZONE / UPLOAD AREA WITH FIXED LUCIDE ICON -->
+                <div id="uploadArea" class="border-2 border-dashed border-sapphire-500/40 hover:border-sapphire-600 rounded-2xl p-6 sm:p-12 text-center transition cursor-pointer bg-sapphire-50/40 dark:bg-blue-950/20 hover:bg-sapphire-100/50 dark:hover:bg-blue-900/20 group relative overflow-hidden">
+                    <input type="file" id="imageInput" multiple accept="image/*" class="hidden">
+                    
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-3xl bg-gradient-to-tr from-sapphire-600 to-blue-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/20 mb-4 group-hover:scale-110 transition shrink-0">
+                        <!-- Lucide Icon Upload fixed -->
+                        <i data-lucide="upload-cloud" class="w-8 h-8 sm:w-10 sm:h-10 text-white group-hover:translate-y-[-2px] transition"></i>
+                    </div>
+
+                    <h3 class="text-base sm:text-xl font-bold text-slate-800 dark:text-white">Kéo thả tài liệu ảnh vào đây hoặc Click để chọn</h3>
+                    <p class="text-xs text-slate-500 dark:text-blue-400/80 mt-1 font-semibold">Hỗ trợ JPG, PNG, WEBP (Quét hàng loạt tài liệu cùng lúc)</p>
+                    
+                    <div class="mt-5 inline-flex items-center space-x-2 sapphire-gradient-btn text-white font-bold text-xs px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl shadow-lg transition transform group-hover:scale-105">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span>CHỌN TỆP ẢNH TỪ MÁY</span>
+                    </div>
+                </div>
+
+                <!-- EDITOR & PREVIEW WORKSPACE -->
+                <div id="workspace" class="hidden space-y-6 mt-6">
+                    
+                    <!-- WORKSPACE TOP TOOLBAR -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-200/80 dark:border-blue-800/40">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center font-bold text-xs">
+                                <i data-lucide="layers" class="w-4 h-4"></i>
+                            </span>
+                            <div>
+                                <h4 class="font-bold text-slate-900 dark:text-white text-sm">Danh Sách Trang Quét</h4>
+                                <p class="text-[11px] text-slate-500 dark:text-blue-300/70">Đã nạp <span id="imageCount" class="font-bold text-sapphire-600 dark:text-blue-400">0</span> hình ảnh (Kéo thả thay đổi thứ tự)</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-2">
+                            <button onclick="triggerFileSelect()" class="glass-input px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-bold text-sapphire-600 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/40 flex items-center space-x-1.5">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                                <span>Thêm Trang</span>
+                            </button>
+                            <button onclick="clearAllImages()" class="glass-input px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center space-x-1.5 border-rose-200 dark:border-rose-900/40">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                <span>Xóa Tất Cả</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- IMAGE GRID WITH DRAG SORTABLE -->
+                    <div id="imagesList" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 min-h-[140px]">
+                        <!-- Dynamic Image Cards Injected Here -->
+                    </div>
+
+                    <!-- PDF SETTINGS PANEL -->
+                    <div class="glass-card p-4 sm:p-6 rounded-2xl space-y-5 border border-slate-200 dark:border-blue-500/20">
+                        <div class="flex items-center space-x-2 text-slate-900 dark:text-white font-bold text-sm">
+                            <i data-lucide="sliders" class="w-4 h-4 text-sapphire-500"></i>
+                            <span>CẤU HÌNH XUẤT TỆP PDF TÀI LIỆU</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+                            <!-- Page Size -->
+                            <div>
+                                <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Khổ Giấy (Page Size)</label>
+                                <select id="pageSize" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                    <option value="a4" class="bg-white dark:bg-slate-900">Khổ A4 (Standard 210 x 297mm)</option>
+                                    <option value="letter" class="bg-white dark:bg-slate-900">Khổ US Letter</option>
+                                    <option value="fit" class="bg-white dark:bg-slate-900">Tự Động Vừa Khung Ảnh gốc</option>
+                                </select>
+                            </div>
+
+                            <!-- Page Orientation -->
+                            <div>
+                                <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Hướng Trang (Orientation)</label>
+                                <select id="pageOrientation" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                    <option value="portrait" class="bg-white dark:bg-slate-900">Trang Dọc (Portrait)</option>
+                                    <option value="landscape" class="bg-white dark:bg-slate-900">Trang Ngang (Landscape)</option>
+                                    <option value="auto" class="bg-white dark:bg-slate-900">Tự Động Theo Tỷ Lệ Ảnh</option>
+                                </select>
+                            </div>
+
+                            <!-- Page Margin -->
+                            <div>
+                                <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Khoảng Cách Lề (Margin)</label>
+                                <select id="pageMargin" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                    <option value="0" class="bg-white dark:bg-slate-900">Không Có Lề (Full Bleed)</option>
+                                    <option value="10" class="bg-white dark:bg-slate-900">Lề Nhỏ (10 mm)</option>
+                                    <option value="20" class="bg-white dark:bg-slate-900">Lề Rộng (20 mm)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Filename & Compression -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs pt-1">
+                            <div class="md:col-span-2">
+                                <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Tên File PDF Xuất Ra</label>
+                                <div class="relative">
+                                    <input type="text" id="pdfFilename" placeholder="VD: Doc_Scan_Sapphire_2026" class="w-full glass-input p-2.5 sm:p-3 rounded-xl pr-12 font-medium">
+                                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sapphire-600 dark:text-blue-400 font-bold">.pdf</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Chất Lượng Nén Ảnh (Độ Nét)</label>
+                                <select id="imageQuality" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                    <option value="1.0" class="bg-white dark:bg-slate-900">Bản In Siêu Nét 100% (Lossless HD)</option>
+                                    <option value="0.95" selected class="bg-white dark:bg-slate-900">Nét Cao Ultra HD (95%)</option>
+                                    <option value="0.85" class="bg-white dark:bg-slate-900">Cân Bằng Medium (85%)</option>
+                                    <option value="0.7" class="bg-white dark:bg-slate-900">Dung Lượng Nhỏ (70%)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- GENERATE PDF BUTTON -->
+                        <div class="pt-2">
+                            <button onclick="generatePDF()" id="generateBtn" class="w-full py-3.5 sm:py-4 rounded-2xl sapphire-gradient-btn text-white font-extrabold text-xs sm:text-sm tracking-wide uppercase flex items-center justify-center space-x-2 sm:space-x-3">
+                                <i data-lucide="file-check" class="w-5 h-5"></i>
+                                <span>TẠO VÀ TẢI PDF CHẤT LƯỢNG CAO</span>
+                            </button>
+                        </div>
+
+                        <!-- PROGRESS BAR -->
+                        <div id="progressContainer" class="hidden space-y-2 pt-1">
+                            <div class="flex justify-between text-xs font-bold text-slate-700 dark:text-blue-300">
+                                <span id="progressText">Đang tối ưu hóa trang quét...</span>
+                                <span id="progressVal" class="text-sapphire-600 dark:text-blue-400 font-mono">0%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 dark:bg-blue-950/80 rounded-full h-2.5 overflow-hidden p-0.5 border border-slate-300 dark:border-blue-600/30">
+                                <div id="progressBar" class="bg-gradient-to-r from-sapphire-600 via-blue-500 to-indigo-500 h-full rounded-full transition-all duration-300 w-0"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES SECTION -->
+    <section id="features" class="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full z-10">
+        <div class="text-center max-w-2xl mx-auto mb-10 reveal-on-scroll">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Tính Năng Scan AI Công Nghệ Mới</h2>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-blue-400/80 mt-1">Xử lý hình ảnh văn bản tài liệu chuyên nghiệp như Microsoft Copilot/Lens</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
+            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal-on-scroll">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center font-bold">
+                    <i data-lucide="crop" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                </div>
+                <h3 class="font-bold text-base text-slate-900 dark:text-white">Kéo Chọn Vùng Quét Trực Quan</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Dễ dàng căn chỉnh 4 góc cắt, loại bỏ phần thừa của mặt bàn hay khung nền xung quanh văn bản.</p>
+            </div>
+
+            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal-on-scroll">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center font-bold">
+                    <i data-lucide="eye" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                </div>
+                <h3 class="font-bold text-base text-slate-900 dark:text-white">Xem Trước Live Filter Tức Thì</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Bộ lọc làm rõ chữ xem trước trực tiếp ngay trên khung cắt canvas trước khi chốt lưu trang.</p>
+            </div>
+
+            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal-on-scroll">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center font-bold">
+                    <i data-lucide="zap" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                </div>
+                <h3 class="font-bold text-base text-slate-900 dark:text-white">Áp Dụng Hàng Loạt Nhanh</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Chỉ cần chọn bộ lọc tối ưu 1 lần và bấm "Áp dụng cho tất cả" để xử lý hàng chục trang tài liệu trong tích tắc.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS SECTION -->
+    <section id="how-it-works" class="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full z-10">
+        <div class="glass-panel rounded-3xl p-6 sm:p-10 border border-white/80 dark:border-blue-500/30 reveal-on-scroll">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">3 Bước Tạo PDF Nét Chuẩn Scan</h2>
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-blue-400/80 mt-1">Dễ dàng thao tác trên cả máy tính lẫn điện thoại mobile</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 relative">
+                <!-- Step 1 -->
+                <div class="text-center space-y-2.5">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 mx-auto rounded-2xl bg-sapphire-600 text-white font-extrabold text-lg sm:text-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                        1
+                    </div>
+                    <h4 class="font-bold text-slate-900 dark:text-white text-sm">Tải Ảnh Văn Bản</h4>
+                    <p class="text-xs text-slate-600 dark:text-blue-200/60">Tải lên một hoặc nhiều ảnh chụp bằng điện thoại.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="text-center space-y-2.5">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 mx-auto rounded-2xl bg-blue-600 text-white font-extrabold text-lg sm:text-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                        2
+                    </div>
+                    <h4 class="font-bold text-slate-900 dark:text-white text-sm">Cắt Vùng & Xem Trước Bộ Lọc</h4>
+                    <p class="text-xs text-slate-600 dark:text-blue-200/60">Kéo vùng chọn nội dung, bấm nút bánh răng và chọn bộ lọc "Tài liệu" hay "B&W".</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="text-center space-y-2.5">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 mx-auto rounded-2xl bg-indigo-600 text-white font-extrabold text-lg sm:text-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                        3
+                    </div>
+                    <h4 class="font-bold text-slate-900 dark:text-white text-sm">Xuất File PDF Đẹp Mắt</h4>
+                    <p class="text-xs text-slate-600 dark:text-blue-200/60">Nhấn nút tạo PDF và lưu bản tài liệu rõ đẹp về máy.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER CHUYÊN NGHIỆP -->
+    <footer class="mt-auto glass-header py-6 px-4 text-xs font-semibold text-slate-600 dark:text-blue-300/80 z-10">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <div class="flex items-center space-x-4 text-base">
+                <a href="#" class="hover:text-sapphire-600 transition"><i data-lucide="github" class="w-4 h-4"></i></a>
+                <a href="#" class="hover:text-sapphire-600 transition"><i data-lucide="globe" class="w-4 h-4"></i></a>
+                <a href="#" class="hover:text-sapphire-600 transition"><i data-lucide="file-text" class="w-4 h-4"></i></a>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-center gap-3 text-slate-500 dark:text-blue-200/70 text-[11px]">
+                <span class="text-slate-900 dark:text-white font-bold">Sapphire Scan Studio</span>
+                <span>•</span>
+                <span>Xử lý 100% cục bộ trong trình duyệt</span>
+                <span>•</span>
+                <a href="#" class="hover:text-sapphire-600 transition">Bảo mật</a>
+            </div>
+
+            <div>
+                <span class="text-[11px] text-slate-400">© 2026 Sapphire Scan Studio</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- EDIT MODAL (WITH COMPACT FILTER THUMBNAILS & LUCIDE ICONS) -->
+    <div id="editModal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="glass-panel w-full max-w-xl rounded-3xl p-4 sm:p-5 border border-white/80 dark:border-blue-500/40 shadow-2xl bg-white/95 dark:bg-slate-950/95 space-y-3.5 max-h-[96vh] flex flex-col">
+            
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between pb-2.5 border-b border-slate-200 dark:border-blue-800/40 shrink-0">
+                <h3 class="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center space-x-2">
+                    <i data-lucide="settings" class="w-4 h-4 text-sapphire-500"></i>
+                    <span>Cấu Hình Cắt Vùng & Xem Trước Bộ Lọc Scan</span>
+                </h3>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-rose-500 text-lg p-1">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Cropper Canvas Area -->
+            <div class="w-full h-56 sm:h-72 bg-slate-900 rounded-2xl overflow-hidden flex items-center justify-center border border-slate-300 dark:border-blue-900/60 relative shrink-0">
+                <img id="cropperImage" class="max-w-full max-h-full block">
+            </div>
+
+            <!-- COMPACT SCAN FILTERS SECTION -->
+            <div class="space-y-1.5 shrink-0">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-700 dark:text-blue-200 flex items-center space-x-1.5">
+                        <i data-lucide="wand-2" class="w-3.5 h-3.5 text-sapphire-500"></i>
+                        <span>Bộ lọc xử lý nét chữ (Xem trước live):</span>
+                    </span>
+                    <button onclick="applyFilterToAllImages()" class="text-[10px] font-bold px-2.5 py-1 rounded-lg bg-sapphire-50 dark:bg-blue-900/80 text-sapphire-600 dark:text-blue-200 border border-sapphire-200 dark:border-blue-500/40 hover:bg-sapphire-100 transition">
+                        Áp dụng cho tất cả
+                    </button>
+                </div>
+
+                <!-- Compact Scrollable Filter Items -->
+                <div class="scan-filters-scroll" id="filterOptionsContainer">
+                    <!-- Filter Items injected dynamically -->
+                </div>
+            </div>
+
+            <!-- Rotation & Crop Tools -->
+            <div class="grid grid-cols-4 gap-2 shrink-0 pt-1">
+                <button onclick="rotateCropper(-90)" class="glass-input p-2 rounded-xl text-xs font-bold text-slate-700 dark:text-blue-200 hover:bg-slate-100 dark:hover:bg-blue-900/40 flex items-center justify-center space-x-1">
+                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                    <span>Trái</span>
+                </button>
+                <button onclick="rotateCropper(90)" class="glass-input p-2 rounded-xl text-xs font-bold text-slate-700 dark:text-blue-200 hover:bg-slate-100 dark:hover:bg-blue-900/40 flex items-center justify-center space-x-1">
+                    <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
+                    <span>Phải</span>
+                </button>
+                <button onclick="flipCropper('h')" class="glass-input p-2 rounded-xl text-xs font-bold text-slate-700 dark:text-blue-200 hover:bg-slate-100 dark:hover:bg-blue-900/40 flex items-center justify-center space-x-1">
+                    <i data-lucide="flip-horizontal" class="w-3.5 h-3.5"></i>
+                    <span>Lật</span>
+                </button>
+                <button onclick="resetCropArea()" class="glass-input p-2 rounded-xl text-xs font-bold text-slate-700 dark:text-blue-200 hover:bg-slate-100 dark:hover:bg-blue-900/40 flex items-center justify-center space-x-1">
+                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                    <span>Reset</span>
+                </button>
+            </div>
+
+            <!-- Modal Footer Controls -->
+            <div class="pt-1 flex space-x-2.5 shrink-0">
+                <button onclick="closeEditModal()" class="w-1/2 py-2 rounded-xl glass-input font-bold text-xs text-slate-600 dark:text-blue-300">Hủy</button>
+                <button onclick="saveModalEdit()" class="w-1/2 py-2 rounded-xl sapphire-gradient-btn text-white font-bold text-xs shadow-md">Lưu & Áp Dụng Trang Này</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION SYSTEM -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 glass-panel bg-white/95 dark:bg-slate-900/95 text-slate-900 dark:text-white px-4 py-3 rounded-2xl text-xs font-bold shadow-2xl transition-all duration-300 opacity-0 translate-y-4 pointer-events-none border border-slate-200 dark:border-blue-500/40 flex items-center space-x-3">
+        <div class="w-6 h-6 rounded-full bg-sapphire-100 text-sapphire-600 dark:bg-blue-900/80 dark:text-blue-400 flex items-center justify-center shrink-0">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+        </div>
+        <span id="toastMsg">Thông báo</span>
+    </div>
+
+    <!-- JAVASCRIPT APP LOGIC -->
+    <script>
+        /* STATE STORE */
+        let imagesData = [];
+        let sortableInstance = null;
+        let editingIndex = -1;
+        let cropperInstance = null;
+        let selectedFilter = 'original';
+
+        const FILTER_DEFINITIONS = [
+            { id: 'original', name: 'Gốc' },
+            { id: 'lighten', name: 'Làm sáng' },
+            { id: 'document', name: 'Tài liệu' },
+            { id: 'bw', name: 'B&W' },
+            { id: 'grayscale', name: 'Tỉ lệ xám' },
+            { id: 'board', name: 'Bảng' }
+        ];
+
+        /* DOM ELEMENTS */
+        const uploadArea = document.getElementById('uploadArea');
+        const imageInput = document.getElementById('imageInput');
+        const workspace = document.getElementById('workspace');
+        const imagesList = document.getElementById('imagesList');
+        const imageCount = document.getElementById('imageCount');
+
+        /* INITIALIZATION */
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initUploadListeners();
+            initSortable();
+            buildFilterUI();
+            initScrollReveal();
+        });
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('dark-icon');
+            if (icon) {
+                icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+                lucide.createIcons();
+            }
+        }
+
+        function triggerFileSelect() {
+            imageInput.click();
+        }
+
+        /* SCROLL REVEAL ANIMATIONS */
+        function initScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+        }
+
+        /* 1. UPLOAD & FILE PROCESSING */
+        function initUploadListeners() {
+            uploadArea.addEventListener('click', (e) => {
+                if (!e.target.closest('button') && !e.target.closest('input')) {
+                    imageInput.click();
+                }
+            });
+
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('bg-sapphire-100/60', 'border-sapphire-600');
+            });
+
+            uploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('bg-sapphire-100/60', 'border-sapphire-600');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('bg-sapphire-100/60', 'border-sapphire-600');
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    handleFiles(e.dataTransfer.files);
+                }
+            });
+
+            imageInput.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files.length > 0) {
+                    handleFiles(e.target.files);
+                    e.target.value = '';
+                }
+            });
+        }
+
+        async function handleFiles(files) {
+            const validFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
+            if (validFiles.length === 0) {
+                showToast("Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, WEBP)!");
+                return;
+            }
+
+            for (const file of validFiles) {
+                try {
+                    const item = await processSingleImage(file);
+                    imagesData.push(item);
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+
+            renderImageGrid();
+            showToast(`Đã thêm ${validFiles.length} hình ảnh trang quét thành công!`);
+        }
+
+        function processSingleImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        resolve({
+                            id: 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                            name: file.name,
+                            originalSrc: e.target.result,
+                            filterSrc: e.target.result,
+                            processedSrc: e.target.result,
+                            width: img.width,
+                            height: img.height,
+                            filter: 'original',
+                            cropData: null,
+                            rotation: 0
+                        });
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        /* 2. DRAG & DROP SORTABLE INSTANCE */
+        function initSortable() {
+            sortableInstance = Sortable.create(imagesList, {
+                animation: 200,
+                ghostClass: 'opacity-40',
+                handle: '.drag-handle',
+                onEnd: function (evt) {
+                    const movedItem = imagesData.splice(evt.oldIndex, 1)[0];
+                    imagesData.splice(evt.newIndex, 0, movedItem);
+                }
+            });
+        }
+
+        /* 3. RENDER WORKSPACE GRID */
+        function renderImageGrid() {
+            if (imagesData.length > 0) {
+                workspace.classList.remove('hidden');
+                imageCount.innerText = imagesData.length;
+            } else {
+                workspace.classList.add('hidden');
+                return;
+            }
+
+            imagesList.innerHTML = '';
+            imagesData.forEach((img, index) => {
+                const card = document.createElement('div');
+                card.className = 'glass-card rounded-2xl overflow-hidden border border-slate-200 dark:border-blue-500/20 flex flex-col relative group';
+                card.setAttribute('data-id', img.id);
+
+                const filterName = FILTER_DEFINITIONS.find(f => f.id === img.filter)?.name || 'Gốc';
+
+                card.innerHTML = `
+                    <div class="drag-handle absolute top-2 left-2 z-10 w-7 h-7 rounded-lg bg-white/90 dark:bg-slate-950/80 border border-slate-200 dark:border-blue-500/40 text-slate-700 dark:text-blue-300 flex items-center justify-center text-xs cursor-grab active:cursor-grabbing hover:bg-slate-100 transition shadow-xs">
+                        <i data-lucide="grip-vertical" class="w-3.5 h-3.5"></i>
+                    </div>
+
+                    <button onclick="removeImage(${index})" class="absolute top-2 right-2 z-10 w-7 h-7 rounded-lg bg-rose-500 text-white flex items-center justify-center text-xs transition border border-rose-600 shadow-xs hover:bg-rose-600">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+
+                    <span class="absolute bottom-12 right-2 z-10 text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-900/80 dark:bg-blue-950/90 text-white dark:text-blue-300 border border-slate-700 dark:border-blue-500/40 backdrop-blur-md">
+                        ${filterName}
+                    </span>
+
+                    <div class="w-full h-36 sm:h-40 bg-slate-900/90 flex items-center justify-center p-2 relative overflow-hidden">
+                        <img src="${img.processedSrc}" class="max-w-full max-h-full object-contain">
+                    </div>
+
+                    <div class="p-2.5 sm:p-3 bg-white/80 dark:bg-slate-900/80 flex items-center justify-between text-xs mt-auto border-t border-slate-200 dark:border-blue-900/40">
+                        <div class="truncate pr-2">
+                            <p class="font-bold text-slate-800 dark:text-white truncate">${img.name}</p>
+                            <p class="text-[10px] text-slate-400 dark:text-blue-400/70 font-mono">${img.width}x${img.height}px</p>
+                        </div>
+                        <button onclick="openEditModal(${index})" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-sapphire-50 dark:bg-blue-900/60 hover:bg-sapphire-600 hover:text-white text-sapphire-600 dark:text-blue-300 flex items-center justify-center shrink-0 font-bold transition border border-sapphire-200 dark:border-blue-500/30" title="Chỉnh sửa / Cắt / Bộ lọc">
+                            <i data-lucide="settings" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+                imagesList.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function removeImage(index) {
+            imagesData.splice(index, 1);
+            renderImageGrid();
+            showToast("Đã xóa trang quét!");
+        }
+
+        function clearAllImages() {
+            imagesData = [];
+            renderImageGrid();
+            showToast("Đã làm sạch danh sách trang!");
+        }
+
+        /* 4. SCAN IMAGE FILTERS ENGINE */
+        function applyScanFilterToCanvas(ctx, width, height, filterType) {
+            if (filterType === 'original') return;
+
+            const imgData = ctx.getImageData(0, 0, width, height);
+            const data = imgData.data;
+            const len = data.length;
+
+            for (let i = 0; i < len; i += 4) {
+                let r = data[i];
+                let g = data[i + 1];
+                let b = data[i + 2];
+
+                let gray = 0.299 * r + 0.587 * g + 0.114 * b;
+
+                if (filterType === 'lighten') {
+                    r = Math.min(255, r * 1.2 + 15);
+                    g = Math.min(255, g * 1.2 + 15);
+                    b = Math.min(255, b * 1.2 + 15);
+                } else if (filterType === 'document') {
+                    let factor = 1.65;
+                    let highGray = (gray - 128) * factor + 128;
+                    if (highGray > 170) highGray = 255;
+                    else if (highGray < 85) highGray = Math.max(0, highGray - 35);
+                    r = g = b = Math.min(255, Math.max(0, highGray));
+                } else if (filterType === 'bw') {
+                    let threshold = 140;
+                    let v = gray > threshold ? 255 : 0;
+                    r = g = b = v;
+                } else if (filterType === 'grayscale') {
+                    r = g = b = gray;
+                } else if (filterType === 'board') {
+                    r = Math.min(255, r * 1.3);
+                    g = Math.min(255, g * 1.3);
+                    b = Math.min(255, b * 1.3);
+                    if (gray > 155) { r = 255; g = 255; b = 255; }
+                }
+
+                data[i] = r;
+                data[i + 1] = g;
+                data[i + 2] = b;
+            }
+
+            ctx.putImageData(imgData, 0, 0);
+        }
+
+        async function getFilteredImageSrc(originalSrc, filterType) {
+            if (filterType === 'original') return originalSrc;
+
+            const tempImg = new Image();
+            await new Promise(r => { tempImg.onload = r; tempImg.src = originalSrc; });
+
+            const canvas = document.createElement('canvas');
+            // Upscale canvas resolution slightly for maximum sharpness if original resolution is high
+            canvas.width = tempImg.width;
+            canvas.height = tempImg.height;
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(tempImg, 0, 0);
+
+            applyScanFilterToCanvas(ctx, canvas.width, canvas.height, filterType);
+            const qualityOpt = parseFloat(document.getElementById('imageQuality')?.value || 0.95);
+            return canvas.toDataURL('image/jpeg', qualityOpt);
+        }
+
+        /* 5. CROPPER MODAL CONTROLLER & COMPACT LIVE FILTERS */
+        function buildFilterUI() {
+            const container = document.getElementById('filterOptionsContainer');
+            container.innerHTML = '';
+
+            FILTER_DEFINITIONS.forEach(f => {
+                const item = document.createElement('div');
+                item.className = `scan-filter-item ${f.id === selectedFilter ? 'active' : ''}`;
+                item.onclick = () => selectFilterOption(f.id);
+
+                item.innerHTML = `
+                    <div class="w-full h-9 rounded-lg flex items-center justify-center text-sapphire-600 dark:text-blue-400 font-bold text-xs mb-0.5 border border-slate-200 dark:border-blue-900/40">
+                        <i data-lucide="${getFilterIcon(f.id)}" class="w-4 h-4"></i>
+                    </div>
+                    <span class="text-[10px] font-semibold text-slate-700 dark:text-blue-200 block truncate">${f.name}</span>
+                `;
+                container.appendChild(item);
+            });
+            lucide.createIcons();
+        }
+
+        function getFilterIcon(id) {
+            switch(id) {
+                case 'lighten': return 'sun';
+                case 'document': return 'file-text';
+                case 'bw': return 'circle-half';
+                case 'grayscale': return 'droplet';
+                case 'board': return 'layout';
+                default: return 'image';
+            }
+        }
+
+        async function selectFilterOption(filterId) {
+            selectedFilter = filterId;
+            document.querySelectorAll('.scan-filter-item').forEach((el, idx) => {
+                if (FILTER_DEFINITIONS[idx].id === filterId) {
+                    el.classList.add('active');
+                } else {
+                    el.classList.remove('active');
+                }
+            });
+
+            if (cropperInstance && editingIndex >= 0) {
+                const imgObj = imagesData[editingIndex];
+                const newFilterSrc = await getFilteredImageSrc(imgObj.originalSrc, selectedFilter);
+                
+                const currentCropData = cropperInstance.getData();
+                cropperInstance.replace(newFilterSrc);
+                setTimeout(() => {
+                    cropperInstance.setData(currentCropData);
+                }, 50);
+            }
+        }
+
+        async function openEditModal(index) {
+            editingIndex = index;
+            const imgObj = imagesData[index];
+            selectedFilter = imgObj.filter || 'original';
+            buildFilterUI();
+
+            const cropperImg = document.getElementById('cropperImage');
+            const initialSrc = await getFilteredImageSrc(imgObj.originalSrc, selectedFilter);
+            cropperImg.src = initialSrc;
+
+            const modal = document.getElementById('editModal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.classList.add('opacity-100');
+
+            if (cropperInstance) {
+                cropperInstance.destroy();
+            }
+
+            setTimeout(() => {
+                cropperInstance = new Cropper(cropperImg, {
+                    viewMode: 1,
+                    autoCropArea: 0.95,
+                    responsive: true,
+                    background: false,
+                    ready() {
+                        if (imgObj.cropData) {
+                            cropperInstance.setData(imgObj.cropData);
+                        }
+                    }
+                });
+            }, 100);
+        }
+
+        function closeEditModal() {
+            const modal = document.getElementById('editModal');
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            if (cropperInstance) {
+                cropperInstance.destroy();
+                cropperInstance = null;
+            }
+            editingIndex = -1;
+        }
+
+        function rotateCropper(deg) {
+            if (cropperInstance) cropperInstance.rotate(deg);
+        }
+
+        function flipCropper(type) {
+            if (cropperInstance) {
+                if (type === 'h') cropperInstance.scaleX(-cropperInstance.getData().scaleX || -1);
+            }
+        }
+
+        function resetCropArea() {
+            if (cropperInstance) cropperInstance.reset();
+        }
+
+        async function saveModalEdit() {
+            if (editingIndex >= 0 && cropperInstance) {
+                const imgObj = imagesData[editingIndex];
+                const cropCanvas = cropperInstance.getCroppedCanvas({
+                    imageSmoothingEnabled: true,
+                    imageSmoothingQuality: 'high',
+                    fillColor: '#ffffff'
+                });
+
+                if (cropCanvas) {
+                    const qualityOpt = parseFloat(document.getElementById('imageQuality')?.value || 0.95);
+                    imgObj.cropData = cropperInstance.getData();
+                    imgObj.filter = selectedFilter;
+                    imgObj.processedSrc = cropCanvas.toDataURL('image/jpeg', qualityOpt);
+                    imgObj.width = cropCanvas.width;
+                    imgObj.height = cropCanvas.height;
+
+                    renderImageGrid();
+                    closeEditModal();
+                    showToast("Đã lưu vùng cắt và bộ lọc trang quét sắc nét!");
+                }
+            }
+        }
+
+        async function applyFilterToAllImages() {
+            if (imagesData.length === 0) return;
+
+            showToast(`Đang áp dụng bộ lọc "${FILTER_DEFINITIONS.find(f => f.id === selectedFilter)?.name}" cho tất cả trang...`);
+
+            const qualityOpt = parseFloat(document.getElementById('imageQuality')?.value || 0.95);
+
+            for (let i = 0; i < imagesData.length; i++) {
+                const item = imagesData[i];
+                item.filter = selectedFilter;
+
+                const filteredDataUrl = await getFilteredImageSrc(item.originalSrc, selectedFilter);
+                
+                const tempImg = new Image();
+                await new Promise(r => { tempImg.onload = r; tempImg.src = filteredDataUrl; });
+
+                const canvas = document.createElement('canvas');
+                canvas.width = tempImg.width;
+                canvas.height = tempImg.height;
+                const ctx = canvas.getContext('2d');
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(tempImg, 0, 0);
+
+                item.processedSrc = canvas.toDataURL('image/jpeg', qualityOpt);
+            }
+
+            renderImageGrid();
+            showToast("Đã áp dụng bộ lọc nét chữ cho tất cả trang thành công!");
+        }
+
+        /* 6. MAIN PDF GENERATOR ENGINE WITH HIGH-DPI SHARPNESS */
+        async function generatePDF() {
+            if (imagesData.length === 0) {
+                showToast("Vui lòng nạp ít nhất 1 trang ảnh quét!");
+                return;
+            }
+
+            const generateBtn = document.getElementById('generateBtn');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const progressVal = document.getElementById('progressVal');
+            const progressText = document.getElementById('progressText');
+
+            generateBtn.disabled = true;
+            generateBtn.classList.add('opacity-60', 'cursor-not-allowed');
+            progressContainer.classList.remove('hidden');
+
+            try {
+                const { jsPDF } = window.jspdf;
+                const pageSizeOpt = document.getElementById('pageSize').value;
+                const orientationOpt = document.getElementById('pageOrientation').value;
+                const marginOpt = parseFloat(document.getElementById('pageMargin').value);
+                const qualityOpt = parseFloat(document.getElementById('imageQuality').value);
+
+                let pdf = null;
+
+                for (let i = 0; i < imagesData.length; i++) {
+                    const pct = Math.round(((i + 1) / imagesData.length) * 100);
+                    progressBar.style.width = pct + '%';
+                    progressVal.innerText = pct + '%';
+                    progressText.innerText = `Đang mã hóa & xuất trang ${i + 1}/${imagesData.length} ở độ nét cao nhất...`;
+
+                    const item = imagesData[i];
+                    const imgW = item.width;
+                    const imgH = item.height;
+
+                    let imgOrient = imgW > imgH ? 'landscape' : 'portrait';
+                    let pageOrient = orientationOpt === 'auto' ? imgOrient : orientationOpt;
+
+                    if (i === 0) {
+                        pdf = new jsPDF({
+                            orientation: pageOrient,
+                            unit: 'mm',
+                            format: pageSizeOpt === 'fit' ? [imgW * 0.264583, imgH * 0.264583] : pageSizeOpt,
+                            compress: true
+                        });
+                    } else {
+                        pdf.addPage(
+                            pageSizeOpt === 'fit' ? [imgW * 0.264583, imgH * 0.264583] : pageSizeOpt,
+                            pageOrient
+                        );
+                    }
+
+                    const pdfPageW = pdf.internal.pageSize.getWidth();
+                    const pdfPageH = pdf.internal.pageSize.getHeight();
+
+                    // Compression format depending on quality setting
+                    const formatType = qualityOpt >= 1.0 ? 'PNG' : 'JPEG';
+
+                    if (pageSizeOpt === 'fit') {
+                        pdf.addImage(item.processedSrc, formatType, 0, 0, pdfPageW, pdfPageH, undefined, 'SLOW');
+                    } else {
+                        const availW = pdfPageW - marginOpt * 2;
+                        const availH = pdfPageH - marginOpt * 2;
+
+                        const imgAspect = imgW / imgH;
+                        const availAspect = availW / availH;
+
+                        let renderW, renderH;
+
+                        if (imgAspect > availAspect) {
+                            renderW = availW;
+                            renderH = availW / imgAspect;
+                        } else {
+                            renderH = availH;
+                            renderW = availH * imgAspect;
+                        }
+
+                        const posX = marginOpt + (availW - renderW) / 2;
+                        const posY = marginOpt + (availH - renderH) / 2;
+
+                        pdf.addImage(item.processedSrc, formatType, posX, posY, renderW, renderH, undefined, 'SLOW');
+                    }
+
+                    await new Promise(r => setTimeout(r, 60));
+                }
+
+                let customName = document.getElementById('pdfFilename').value.trim();
+                if (!customName) {
+                    const now = new Date();
+                    customName = `DocScan_Sapphire_${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${now.getHours()}${now.getMinutes()}`;
+                }
+                customName = customName.replace(/\.pdf$/i, '') + '.pdf';
+
+                pdf.save(customName);
+                showToast(`Đã xuất file PDF sắc nét "${customName}" thành công!`);
+
+            } catch (err) {
+                console.error(err);
+                showToast("Lỗi khi tạo PDF: " + err.message);
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+                setTimeout(() => {
+                    progressContainer.classList.add('hidden');
+                    progressBar.style.width = '0%';
+                }, 1500);
+            }
+        }
+
+        /* TOAST HELPER */
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
