@@ -908,10 +908,23 @@
     <!-- FIREBASE INTEGRATION ENGINE (MODULAR INITIALIZATION) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, updateDoc, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // 1. Cấu hình App ID và biến toàn cục
+        // =========================================================================
+        // THAY THẾ CẤU HÌNH FIREBASE CỦA BẠN VÀO ĐÂY (LẤY TỪ FIREBASE CONSOLE)
+        // =========================================================================
+        const myFirebaseConfig = typeof __firebase_config !== 'undefined' && __firebase_config 
+            ? JSON.parse(__firebase_config)
+            : {
+                apiKey: "AIzaSyAOepsJ2YYXH1ksFT020Z94WTGBhTm9MXc",
+                authDomain: "anhsangpdf-studio.firebaseapp.com",
+                projectId: "anhsangpdf-studio",
+                storageBucket: "anhsangpdf-studio.firebasestorage.app",
+                messagingSenderId: "526264978994",
+                appId: "1:526264978994:web:f6accb43901b8c1bb8362b"
+            };
+
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'anhsangpdf-app-default';
         let db = null;
         let auth = null;
@@ -919,45 +932,41 @@
 
         async function initFirebaseStats() {
             try {
-                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-                    const firebaseConfig = JSON.parse(__firebase_config);
-                    const app = initializeApp(firebaseConfig);
-                    db = getFirestore(app);
-                    auth = getAuth(app);
+                // Khởi tạo Firebase App với cấu hình dự án của bạn
+                const app = initializeApp(myFirebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
 
-                    // 2. Xác thực Auth bắt buộc trước khi query
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
+                // Xác thực vô danh để đảm bảo có UID truy vấn an toàn
+                await signInAnonymously(auth);
 
-                    // 3. Đặt đường dẫn lưu trữ theo đúng quy tắc (Strict Path)
-                    statsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'stats', 'counter');
+                // Đường dẫn lưu trữ bộ đếm duy nhất trên Firestore Cloud
+                statsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'stats', 'counter');
 
-                    // 4. Lắng nghe thay đổi đếm số trang theo thời gian thực (Real-time)
-                    onSnapshot(statsDocRef, (snap) => {
-                        if (snap.exists()) {
-                            const data = snap.data();
-                            if (data && typeof data.totalFiles === 'number') {
-                                window.updateStatsDisplay(data.totalFiles);
-                                try { localStorage.setItem('anhsangpdf_created_count', data.totalFiles.toString()); } catch(e){}
-                            }
-                        } else {
-                            // Tạo document mặc định nếu chưa tồn tại
-                            setDoc(statsDocRef, { totalFiles: 20, updatedAt: new Date().toISOString() }, { merge: true });
-                            window.updateStatsDisplay(20);
+                // Lắng nghe thay đổi theo thời gian thực (Real-Time Synchronize)
+                // Khi 1 người dùng tạo file, số liệu lập tức cập nhật tới toàn bộ người dùng khác
+                onSnapshot(statsDocRef, (snap) => {
+                    if (snap.exists()) {
+                        const data = snap.data();
+                        if (data && typeof data.totalFiles === 'number') {
+                            window.updateStatsDisplay(data.totalFiles);
+                            try { localStorage.setItem('anhsangpdf_created_count', data.totalFiles.toString()); } catch(e){}
                         }
-                    }, (err) => {
-                        console.warn("Lỗi kết nối Firebase Real-time, chuyển sang bộ đếm Local Storage:", err);
-                    });
-                }
+                    } else {
+                        // Khởi tạo mốc đếm ban đầu nếu chưa có dữ liệu trên Cloud
+                        setDoc(statsDocRef, { totalFiles: 43, updatedAt: new Date().toISOString() }, { merge: true });
+                        window.updateStatsDisplay(43);
+                    }
+                }, (err) => {
+                    console.warn("Đang dùng dữ liệu LocalStorage dự phòng:", err);
+                });
+
             } catch (error) {
-                console.warn("Khởi tạo Firebase thất bại, kích hoạt chế độ dự phòng Offline:", error);
+                console.warn("Chưa cấu hình API Key Firebase thực tế, đang chạy chế độ offline:", error);
             }
         }
 
-        // 5. Hàm tăng số đếm nguyên tử (Atomic Increment) khi tạo PDF thành công
+        // Tăng số lượng trang nguyên tử (Tránh xung đột khi nhiều người cùng xuất PDF)
         window.incrementFirebaseCounter = async function(count) {
             if (statsDocRef && auth?.currentUser) {
                 try {
@@ -968,17 +977,17 @@
                     return true;
                 } catch (e) {
                     try {
-                        await setDoc(statsDocRef, { totalFiles: 20 + count, updatedAt: new Date().toISOString() }, { merge: true });
+                        await setDoc(statsDocRef, { totalFiles: 43 + count, updatedAt: new Date().toISOString() }, { merge: true });
                         return true;
                     } catch (err) {
-                        console.warn("Không thể đồng bộ số liệu lên Firestore:", err);
+                        console.warn("Không thể ghi dữ liệu lên Firebase:", err);
                     }
                 }
             }
             return false;
         };
 
-        // Kích hoạt khởi tạo
+        // Kích hoạt engine Firebase
         initFirebaseStats();
     </script>
 
@@ -1343,7 +1352,7 @@
         };
 
         async function updateDashboardStats(addedCount = 0) {
-            let storedVal = parseInt(localStorage.getItem('anhsangpdf_created_count') || '20', 10);
+            let storedVal = parseInt(localStorage.getItem('anhsangpdf_created_count') || '43', 10);
             if (addedCount > 0) {
                 storedVal += addedCount;
                 try { localStorage.setItem('anhsangpdf_created_count', storedVal.toString()); } catch(e) {}
