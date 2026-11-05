@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AnhsangPDF - Sapphire Scan & PDF Studio AI Copilot Pro</title>
+    <title>AnhsangPDF - Sapphire Scan & PDF Studio Pro</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -33,7 +33,8 @@
                         'pulse-glow': 'pulseGlow 2s infinite ease-in-out',
                         'shimmer': 'shimmer 2.5s infinite linear',
                         'bounce-subtle': 'bounceSubtle 2s infinite ease-in-out',
-                        'float-chibi': 'floatChibi 3s infinite ease-in-out',
+                        'float-chibi': 'floatChibi 4s infinite ease-in-out',
+                        'card-float-slow': 'cardFloatSlow 6s infinite ease-in-out',
                     },
                     keyframes: {
                         pulseGlow: {
@@ -51,6 +52,10 @@
                         floatChibi: {
                             '0%, 100%': { transform: 'translateY(0px)' },
                             '50%': { transform: 'translateY(-8px)' }
+                        },
+                        cardFloatSlow: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-12px) rotate(1deg)' }
                         }
                     }
                 }
@@ -77,7 +82,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Default Light Mode & Dark Mode Styling */
         body {
             font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
             background: linear-gradient(135deg, #eef2ff 0%, #e0f2fe 40%, #f3e8ff 100%);
@@ -92,7 +96,7 @@
             color: #eff6ff;
         }
 
-        /* Glassmorphism Classes with Animation Polish */
+        /* Glassmorphism Styles */
         .glass-header {
             background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(20px);
@@ -126,18 +130,18 @@
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             border: 1px solid rgba(226, 232, 240, 0.8);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .dark .glass-card {
             background: rgba(15, 23, 42, 0.65);
             border-color: rgba(59, 130, 246, 0.18);
         }
         .glass-card:hover {
-            transform: translateY(-4px) scale(1.01);
-            box-shadow: 0 16px 32px -4px rgba(21, 88, 201, 0.15);
+            transform: translateY(-6px) scale(1.015);
+            box-shadow: 0 20px 40px -6px rgba(21, 88, 201, 0.2);
         }
         .dark .glass-card:hover {
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65), 0 0 30px rgba(59, 130, 246, 0.35);
         }
 
         .glass-input {
@@ -225,7 +229,7 @@
             box-shadow: 0 0 12px rgba(21, 88, 201, 0.35);
         }
 
-        /* Floating Animated Background Orbs */
+        /* Floating Background Orbs */
         @keyframes floatAnimation {
             0% { transform: translateY(0px) rotate(0deg) scale(1); }
             50% { transform: translateY(-30px) rotate(180deg) scale(1.1); }
@@ -245,17 +249,19 @@
         .orb-3 { left: 45%; bottom: 10%; width: 250px; height: 250px; background: rgba(56, 189, 248, 0.16); animation-duration: 18s; animation-delay: 7s; }
 
         /* Scroll Reveal Effect */
-        .reveal-on-scroll {
+        .reveal {
             opacity: 0;
-            transform: translateY(28px);
-            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(35px) scale(0.98);
+            transition: all 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+            transition-delay: var(--d, 0ms);
+            will-change: transform, opacity;
         }
-        .reveal-on-scroll.revealed {
+        .reveal.in {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
 
-        /* Pulse Ring for Live Analytics Widget */
+        /* Pulse Ring */
         .pulse-ring {
             display: inline-block;
             width: 8px;
@@ -269,6 +275,20 @@
             0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
             100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Hero Art Floating Cards */
+        .hero-art-float {
+            animation: floatChibi 4s ease-in-out infinite;
+        }
+
+        /* Section Title Widget */
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
         }
 
         /* Chibi Keyframes & Dynamic Mouth Expressions */
@@ -302,6 +322,16 @@
         .chibi-mouth-talking {
             animation: chibiTalk 0.4s infinite ease-in-out;
         }
+
+        /* Workspace & Interactive layout */
+        #workspace { scroll-margin-top: 90px; }
+        #imagesList { align-items: stretch; }
+        .image-card { min-width: 0; }
+        .image-card img { user-select: none; -webkit-user-drag: none; }
+        .workspace-toolbar { background: linear-gradient(120deg, rgba(219,234,254,.72), rgba(255,255,255,.72)); }
+        .dark .workspace-toolbar { background: linear-gradient(120deg, rgba(30,58,138,.28), rgba(15,23,42,.7)); }
+        .tool-btn:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid rgba(37,99,235,.45); outline-offset: 2px; }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between relative">
@@ -311,7 +341,7 @@
     <div class="floating-orb orb-2"></div>
     <div class="floating-orb orb-3"></div>
 
-    <!-- NAVBAR WITH GLASS WRAPPER (TỐI ƯU GỌN MỚI CHO MOBILE) -->
+    <!-- NAVBAR WITH GLASS WRAPPER -->
     <header class="sticky top-0 z-50 w-full glass-header">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-12 sm:h-20 flex items-center justify-between">
             <a href="#" class="flex items-center space-x-2 sm:space-x-3 group">
@@ -322,17 +352,17 @@
                     <span class="font-extrabold text-sm sm:text-xl tracking-tight bg-gradient-to-r from-sapphire-600 via-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-300 bg-clip-text text-transparent block leading-tight">
                         AnhsangPDF
                     </span>
-                    <span class="hidden sm:block text-[11px] font-semibold text-slate-500 dark:text-blue-400/80">Sapphire Scan & PDF Studio AI Copilot Pro</span>
+                    <span class="hidden sm:block text-[11px] font-semibold text-slate-500 dark:text-blue-400/80">Sapphire Scan & PDF Studio Pro</span>
                 </div>
             </a>
 
-            <!-- Quick Action CTA & Theme Switcher Buttons -->
+            <!-- Theme Switcher & Main CTA -->
             <div class="flex items-center space-x-1.5 sm:space-x-3">
                 <button onclick="toggleDarkMode()" class="p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl glass-input hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center justify-center text-slate-700 dark:text-slate-200" title="Chuyển chế độ Sáng/Tối">
                     <i data-lucide="moon" id="dark-icon" class="w-3.5 h-3.5 sm:w-5 sm:h-5"></i>
                 </button>
 
-                <!-- MAIN CTA BUTTON (Gọn trên mobile) -->
+                <!-- MAIN CTA BUTTON -->
                 <a href="#convert-section" class="sapphire-gradient-btn text-white text-[11px] sm:text-xs font-extrabold px-3 py-1.5 sm:px-6 sm:py-3 rounded-xl sm:rounded-2xl flex items-center space-x-1 sm:space-x-2 tracking-wider uppercase shadow-md hover:shadow-blue-500/50">
                     <i data-lucide="sparkles" class="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-bounce-subtle"></i>
                     <span>QUÉT NGAY</span>
@@ -341,30 +371,95 @@
         </div>
     </header>
 
-    <!-- HERO SECTION LANDING PAGE -->
+    <!-- HERO MODERN SECTION -->
     <section class="relative pt-6 pb-8 lg:pt-12 lg:pb-14 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full z-10">
-        <div class="text-center max-w-3xl mx-auto space-y-3 sm:space-y-4 relative z-10 reveal-on-scroll">
-            <div class="inline-flex items-center space-x-2 bg-blue-100/80 dark:bg-blue-950/80 backdrop-blur-md px-3 py-1 sm:px-4 sm:py-1.5 rounded-full border border-blue-200 dark:border-blue-500/30 text-[11px] sm:text-xs font-bold text-sapphire-600 dark:text-blue-400 shadow-sm">
-                <span class="pulse-ring"></span>
-                <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
-                <span>Công Nghệ AI Scan Local 100% - Bảo Mật Tuyệt Đối</span>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <div class="lg:col-span-7 space-y-4 text-center lg:text-left reveal in" style="--d: 0ms;">
+                <div class="inline-flex items-center space-x-2 bg-blue-100/80 dark:bg-blue-950/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-blue-200 dark:border-blue-500/30 text-xs font-bold text-sapphire-600 dark:text-blue-400 shadow-sm">
+                    <span class="pulse-ring"></span>
+                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                    <span>Công nghệ Scan AI Bảo mật Cục bộ</span>
+                </div>
+
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                    Quét & Chuyển Đổi Ảnh <br>
+                    <span class="bg-gradient-to-r from-sapphire-600 via-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-200 bg-clip-text text-transparent">Sang PDF Sắc Nét</span>
+                </h1>
+
+                <p class="text-xs sm:text-base text-slate-600 dark:text-blue-200/70 font-medium leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                    Tải ảnh lên, làm nét bộ lọc tài liệu B&W / Magic Document, căn chỉnh vùng cắt thông minh và đính dấu mộc bản quyền chỉ trong một bước xuất PDF duy nhất.
+                </p>
+
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
+                    <a href="#convert-section" class="sapphire-gradient-btn text-white text-xs sm:text-sm font-bold px-6 py-3 rounded-2xl flex items-center space-x-2 shadow-lg">
+                        <span>Bắt Đầu Quét Tệp</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+
+                <!-- WIDGET AF-HOME-STATS (ĐƯỢC NÂNG CẤP LƯU VÀ TÍCH LŨY SỐ LIỆU TỰ ĐỘNG FIREBASE / FALLBACK) -->
+                <div class="pt-4 grid grid-cols-3 gap-3 border-t border-slate-200/60 dark:border-blue-900/40 text-center lg:text-left reveal in" style="--d: 100ms;">
+                    <div>
+                        <strong class="block text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-white font-mono" id="hero-stat-files">0</strong>
+                        <span class="text-[11px] font-semibold text-slate-500 dark:text-blue-400/80">Tài liệu đã tạo</span>
+                    </div>
+                    <div>
+                        <strong class="block text-lg sm:text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">100%</strong>
+                        <span class="text-[11px] font-semibold text-slate-500 dark:text-blue-400/80">Riêng tư cục bộ</span>
+                    </div>
+                    <div>
+                        <strong class="block text-lg sm:text-2xl font-extrabold text-amber-500 font-mono">4K UHD</strong>
+                        <span class="text-[11px] font-semibold text-slate-500 dark:text-blue-400/80">Độ nét xuất PDF</span>
+                    </div>
+                </div>
             </div>
 
-            <h1 class="text-2xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight sm:leading-[1.15]">
-                Quét & Chuyển Đổi Ảnh <br class="hidden sm:block">
-                <span class="bg-gradient-to-r from-sapphire-600 via-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-200 bg-clip-text text-transparent">Sang PDF Sắc Nét</span> Chuẩn Copilot
-            </h1>
+            <!-- HERO ART DECORATION (HIỆU ỨNG CHUYỂN ĐỘNG CHUYÊN NGHIỆP REVEAL IN) -->
+            <div class="lg:col-span-5 relative hidden lg:block reveal in" style="--d: 180ms;">
+                <div class="relative w-full h-[360px] flex items-center justify-center">
+                    <div class="absolute w-72 h-72 rounded-full bg-blue-500/10 blur-3xl animate-pulse"></div>
 
-            <p class="text-xs sm:text-base text-slate-600 dark:text-blue-200/70 font-medium leading-relaxed max-w-2xl mx-auto">
-                Tải lên, khoanh vùng chọn quét trang tài liệu, xem trước live các bộ lọc làm rõ chữ chống mờ (B&W, Document Magic, Lighten), thêm Watermark và xuất PDF sắc nét.
-            </p>
+                    <!-- Float Card 1 -->
+                    <div class="hero-art-float absolute top-4 left-4 glass-card p-4 rounded-2xl shadow-xl flex items-center space-x-3 border border-white/60 dark:border-blue-500/30 z-20">
+                        <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/60 text-sapphire-600 dark:text-blue-400 flex items-center justify-center">
+                            <i data-lucide="crop" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <strong class="block text-xs text-slate-900 dark:text-white">Cắt Vùng Tự Động</strong>
+                            <small class="text-[10px] text-slate-500 dark:text-blue-300">Bo góc 4 điểm chính xác</small>
+                        </div>
+                    </div>
+
+                    <!-- Float Card 2 -->
+                    <div class="hero-art-float absolute bottom-8 right-2 glass-card p-4 rounded-2xl shadow-xl flex items-center space-x-3 border border-white/60 dark:border-blue-500/30 z-20" style="animation-delay: 1.5s;">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                            <i data-lucide="stamp" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <strong class="block text-xs text-slate-900 dark:text-white">Dấu Mộc Bản Quyền</strong>
+                            <small class="text-[10px] text-slate-500 dark:text-blue-300">Khóa chìm chèn tức thì</small>
+                        </div>
+                    </div>
+
+                    <!-- Center Decorative Badge -->
+                    <div class="glass-panel p-6 rounded-3xl border border-white/80 dark:border-blue-500/40 shadow-2xl text-center space-y-3 max-w-xs z-10 animate-card-float-slow">
+                        <div class="w-16 h-16 mx-auto rounded-2xl sapphire-gradient-btn flex items-center justify-center text-white shadow-lg">
+                            <i data-lucide="file-check-2" class="w-8 h-8"></i>
+                        </div>
+                        <h4 class="font-extrabold text-sm text-slate-900 dark:text-white">Bộ Lọc Văn Bản Smart B&W</h4>
+                        <p class="text-[11px] text-slate-500 dark:text-blue-300">Tự động xóa bóng nhòe, tăng cường độ tương phản giúp tài liệu dễ đọc như máy scan thật.</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- CONVERTER STUDIO WORKSPACE -->
-        <div id="convert-section" class="mt-6 sm:mt-10 max-w-5xl mx-auto relative z-20 reveal-on-scroll">
+        <div id="convert-section" class="mt-8 sm:mt-12 max-w-5xl mx-auto relative z-20 reveal in" style="--d: 220ms;">
             <div class="glass-panel rounded-2xl sm:rounded-3xl p-3 sm:p-8 border border-white/80 dark:border-blue-500/30 shadow-2xl relative space-y-6">
                 
-                <!-- DROP ZONE / UPLOAD AREA WITH HOVER ANIMATION -->
+                <!-- DROP ZONE / UPLOAD AREA -->
                 <div id="uploadArea" class="border-2 border-dashed border-sapphire-500/40 hover:border-sapphire-600 rounded-xl sm:rounded-2xl p-5 sm:p-12 text-center transition-all duration-300 cursor-pointer bg-sapphire-50/40 dark:bg-blue-950/20 hover:bg-sapphire-100/60 dark:hover:bg-blue-900/30 group relative overflow-hidden">
                     <input type="file" id="imageInput" multiple accept="image/*" class="hidden">
                     
@@ -381,45 +476,11 @@
                     </div>
                 </div>
 
-                <!-- WIDGET 1: DASHBOARD ANALYTICS BAR (LỚP PHỦ GLASS MỜ ĐẶT NGAY BÊN DƯỚI TÍNH NĂNG TẢI LÊN) -->
-                <div class="glass-card p-3 sm:p-4 rounded-2xl border border-white/80 dark:border-blue-500/30 shadow-md backdrop-blur-xl">
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5">
-                        <div class="p-2.5 rounded-xl bg-white/40 dark:bg-slate-900/40 text-center space-y-0.5 border border-slate-200/50 dark:border-blue-800/30">
-                            <div class="text-[11px] text-slate-500 dark:text-blue-300/70 font-medium flex items-center justify-center space-x-1">
-                                <i data-lucide="file-badge-2" class="w-3.5 h-3.5 text-sapphire-500"></i>
-                                <span>Trang đã xử lý</span>
-                            </div>
-                            <div class="text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-white font-mono" id="stat-processed">0</div>
-                        </div>
-                        <div class="p-2.5 rounded-xl bg-white/40 dark:bg-slate-900/40 text-center space-y-0.5 border border-slate-200/50 dark:border-blue-800/30">
-                            <div class="text-[11px] text-slate-500 dark:text-blue-300/70 font-medium flex items-center justify-center space-x-1">
-                                <i data-lucide="gauge" class="w-3.5 h-3.5 text-emerald-500"></i>
-                                <span>Chất lượng nét</span>
-                            </div>
-                            <div class="text-lg sm:text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono" id="stat-quality">100%</div>
-                        </div>
-                        <div class="p-2.5 rounded-xl bg-white/40 dark:bg-slate-900/40 text-center space-y-0.5 border border-slate-200/50 dark:border-blue-800/30">
-                            <div class="text-[11px] text-slate-500 dark:text-blue-300/70 font-medium flex items-center justify-center space-x-1">
-                                <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-500"></i>
-                                <span>Tốc độ xử lý</span>
-                            </div>
-                            <div class="text-lg sm:text-2xl font-extrabold text-amber-600 dark:text-amber-400 font-mono">&lt; 0.2s</div>
-                        </div>
-                        <div class="p-2.5 rounded-xl bg-white/40 dark:bg-slate-900/40 text-center space-y-0.5 border border-slate-200/50 dark:border-blue-800/30">
-                            <div class="text-[11px] text-slate-500 dark:text-blue-300/70 font-medium flex items-center justify-center space-x-1">
-                                <i data-lucide="lock" class="w-3.5 h-3.5 text-indigo-500"></i>
-                                <span>Quyền riêng tư</span>
-                            </div>
-                            <div class="text-lg sm:text-2xl font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">100%</div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- EDITOR & PREVIEW WORKSPACE -->
                 <div id="workspace" class="hidden space-y-6">
                     
                     <!-- WORKSPACE TOP TOOLBAR -->
-                    <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-200/80 dark:border-blue-800/40">
+                    <div class="workspace-toolbar flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-blue-800/40">
                         <div class="flex items-center space-x-3">
                             <span class="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center font-bold text-xs">
                                 <i data-lucide="layers" class="w-4 h-4"></i>
@@ -487,12 +548,21 @@
                         </div>
                     </div>
 
-                    <!-- THÀNH PHẦN RIÊNG 1: ĐẶT TÊN FILE VÀ CHỌN CHẤT LƯỢNG NÉN (BÊN DƯỚI CẤU HÌNH XUẤT TỆP PDF) -->
-                    <div class="p-4 sm:p-5 rounded-2xl glass-card bg-blue-50/50 dark:bg-blue-950/30 border border-blue-200/80 dark:border-blue-800/40 space-y-3">
-                        <div class="flex items-center space-x-2 text-sapphire-600 dark:text-blue-400 font-bold text-xs sm:text-sm">
-                            <i data-lucide="file-type" class="w-4 h-4"></i>
-                            <span>TÊN TỆP & CHẤT LƯỢNG NÉN TÀI LIỆU</span>
+                    <!-- TÊN TỆP & CHẤT LƯỢNG NÉN TÀI LIỆU -->
+                    <div class="p-4 sm:p-5 rounded-2xl glass-card bg-blue-50/50 dark:bg-blue-950/30 border border-blue-200/80 dark:border-blue-800/40 space-y-3 relative">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2 text-sapphire-600 dark:text-blue-400 font-bold text-xs sm:text-sm">
+                                <i data-lucide="file-type" class="w-4 h-4"></i>
+                                <span>TÊN TỆP & CHẤT LƯỢNG NÉN TÀI LIỆU</span>
+                            </div>
+                            
+                            <!-- ICON DẤU MỘC ĐỂ ẨN / HIỆN WATERMARK -->
+                            <button type="button" onclick="toggleWatermarkOptions()" id="watermarkStampBtn" class="flex items-center space-x-1.5 px-3 py-1 rounded-xl glass-input text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 border-indigo-200 dark:border-indigo-800/40 transition">
+                                <i data-lucide="stamp" class="w-4 h-4"></i>
+                                <span>Tạo bản quyền</span>
+                            </button>
                         </div>
+
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
                             <div class="md:col-span-2">
                                 <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Tên File PDF Xuất Ra</label>
@@ -505,33 +575,33 @@
                             <div>
                                 <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Chất Lượng Nén Ảnh (Độ Nét)</label>
                                 <select id="imageQuality" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
-                                    <option value="1.0" class="bg-white dark:bg-slate-900">Bản In Siêu Nét 100% (Lossless HD)</option>
-                                    <option value="0.95" selected class="bg-white dark:bg-slate-900">Nét Cao Ultra HD (95%)</option>
-                                    <option value="0.85" class="bg-white dark:bg-slate-900">Cân Bằng Medium (85%)</option>
-                                    <option value="0.7" class="bg-white dark:bg-slate-900">Dung Lượng Nhỏ (70%)</option>
+                                    <option value="1.0" class="bg-white dark:bg-slate-900">JPEG chất lượng tối đa (100%)</option>
+                                    <option value="0.95" selected class="bg-white dark:bg-slate-900">JPEG chất lượng cao (95%)</option>
+                                    <option value="0.85" class="bg-white dark:bg-slate-900">Cân bằng dung lượng (85%)</option>
+                                    <option value="0.7" class="bg-white dark:bg-slate-900">Dung lượng nhỏ (70%)</option>
                                 </select>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- THÀNH PHẦN RIÊNG 2: TẠO DẤU BẢN QUYỀN (WATERMARK GENERATOR) -->
-                    <div class="p-4 sm:p-5 rounded-2xl glass-card bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-200/80 dark:border-indigo-800/40 space-y-3">
-                        <div class="flex items-center space-x-2 text-indigo-600 dark:text-indigo-400 font-bold text-xs sm:text-sm">
-                            <i data-lucide="shield" class="w-4 h-4"></i>
-                            <span>TẠO DẤU BẢN QUYỀN (WATERMARK WIDGET)</span>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
-                            <div class="md:col-span-2">
-                                <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Nội Dung Dấu Bản Quyền (Để trống nếu không dùng)</label>
-                                <input type="text" id="watermarkText" placeholder="VD: BẢN QUYỀN / BẢO MẬT 2026 - ANHSANGPDF" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium" oninput="updateWatermarkPreview()">
+                        <!-- PHẦN CẤU HÌNH DẤU BẢN QUYỀN (WATERMARK) -->
+                        <div id="watermarkContainer" class="hidden pt-3 border-t border-indigo-100 dark:border-indigo-900/40 animate-fadeIn space-y-3">
+                            <div class="flex items-center space-x-1.5 text-indigo-600 dark:text-indigo-400 font-bold text-xs">
+                                <i data-lucide="shield" class="w-3.5 h-3.5"></i>
+                                <span>Cấu hình dấu mộc bản quyền (Watermark)</span>
                             </div>
-                            <div>
-                                <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Màu Sắc Dấu Bản Quyền</label>
-                                <select id="watermarkColor" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium" onchange="updateWatermarkPreview()">
-                                    <option value="rgba(150,150,150,0.25)" class="bg-white dark:bg-slate-900">Màu Xám Mờ (Standard)</option>
-                                    <option value="rgba(21,88,201,0.25)" class="bg-white dark:bg-slate-900">Màu Xanh Sapphire Mờ</option>
-                                    <option value="rgba(225,29,72,0.25)" class="bg-white dark:bg-slate-900">Màu Đỏ Bảo Mật Mờ</option>
-                                </select>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+                                <div class="md:col-span-2">
+                                    <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Nội Dung Dấu Bản Quyền</label>
+                                    <input type="text" id="watermarkText" placeholder="VD: BẢN QUYỀN / BẢO MẬT 2026 - ANHSANGPDF" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                </div>
+                                <div>
+                                    <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Màu Sắc Dấu Bản Quyền</label>
+                                    <select id="watermarkColor" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                        <option value="rgba(150,150,150,0.25)" class="bg-white dark:bg-slate-900">Màu Xám Mờ (Standard)</option>
+                                        <option value="rgba(21,88,201,0.25)" class="bg-white dark:bg-slate-900">Màu Xanh Sapphire Mờ</option>
+                                        <option value="rgba(225,29,72,0.25)" class="bg-white dark:bg-slate-900">Màu Đỏ Bảo Mật Mờ</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -544,7 +614,7 @@
                         </button>
                     </div>
 
-                    <!-- PROGRESS BAR WITH ANIMATED SHIMMER -->
+                    <!-- PROGRESS BAR -->
                     <div id="progressContainer" class="hidden space-y-2 pt-1">
                         <div class="flex justify-between text-xs font-bold text-slate-700 dark:text-blue-300">
                             <span id="progressText">Đang tối ưu hóa trang quét...</span>
@@ -560,15 +630,67 @@
         </div>
     </section>
 
-    <!-- FEATURES SECTION -->
-    <section id="features" class="py-10 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full z-10">
-        <div class="text-center max-w-2xl mx-auto mb-8 sm:mb-10 reveal-on-scroll">
-            <h2 class="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Tính Năng Scan AI Công Nghệ Mới</h2>
-            <p class="text-xs sm:text-sm text-slate-500 dark:text-blue-400/80 mt-1">Xử lý hình ảnh văn bản tài liệu chuyên nghiệp như Microsoft Copilot/Lens</p>
-        </div>
+    <!-- WIDGET HƯỚNG DẪN CÁC BƯỚC (STEP-BY-STEP GUIDANCE WIDGET) -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-title reveal in" style="--d: 240ms;">
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-2">
+            <i data-lucide="map-pin" class="w-5 h-5 text-sapphire-500"></i>
+            <span>Hướng dẫn 4 bước tạo tài liệu PDF đơn giản</span>
+        </h2>
+    </div>
 
+    <section class="pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full z-10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <div class="glass-card p-5 rounded-3xl space-y-3 relative overflow-hidden reveal in" style="--d: 260ms;">
+                <span class="absolute -right-3 -top-3 text-6xl font-black text-slate-200/50 dark:text-blue-900/30 select-none font-mono">01</span>
+                <div class="w-10 h-10 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center font-bold">
+                    <i data-lucide="upload" class="w-5 h-5"></i>
+                </div>
+                <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white">1. Chọn Hoặc Kéo Ảnh</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Tải lên hàng loạt file hình ảnh từ máy tính hoặc điện thoại di động.</p>
+            </div>
+
+            <div class="glass-card p-5 rounded-3xl space-y-3 relative overflow-hidden reveal in" style="--d: 300ms;">
+                <span class="absolute -right-3 -top-3 text-6xl font-black text-slate-200/50 dark:text-blue-900/30 select-none font-mono">02</span>
+                <div class="w-10 h-10 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center font-bold">
+                    <i data-lucide="wand-2" class="w-5 h-5"></i>
+                </div>
+                <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white">2. Cắt Vùng & Bộ Lọc</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Sử dụng công cụ cắt góc chính xác và chọn bộ lọc văn bản B&W làm nổi bật nét chữ.</p>
+            </div>
+
+            <div class="glass-card p-5 rounded-3xl space-y-3 relative overflow-hidden reveal in" style="--d: 340ms;">
+                <span class="absolute -right-3 -top-3 text-6xl font-black text-slate-200/50 dark:text-blue-900/30 select-none font-mono">03</span>
+                <div class="w-10 h-10 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center font-bold">
+                    <i data-lucide="stamp" class="w-5 h-5"></i>
+                </div>
+                <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white">3. Thêm Dấu Bản Quyền</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Nhấp icon mộc bản quyền nếu cần chèn Watermark khóa chìm bảo mật tài liệu.</p>
+            </div>
+
+            <div class="glass-card p-5 rounded-3xl space-y-3 relative overflow-hidden reveal in" style="--d: 380ms;">
+                <span class="absolute -right-3 -top-3 text-6xl font-black text-slate-200/50 dark:text-blue-900/30 select-none font-mono">04</span>
+                <div class="w-10 h-10 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center font-bold">
+                    <i data-lucide="download-cloud" class="w-5 h-5"></i>
+                </div>
+                <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white">4. Đóng Gói Xuất PDF</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Chọn kích thước khổ giấy A4/Letter và nhấn nút để tải tệp PDF về thiết bị.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION TITLE & FEATURES GRID -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-title reveal in" style="--d: 400ms;">
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-2">
+            <i data-lucide="sparkles" class="w-5 h-5 text-sapphire-500"></i>
+            <span>Mọi thứ bạn cần để quét tài liệu sắc nét</span>
+        </h2>
+    </div>
+
+    <section id="features" class="pb-10 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full z-10">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal-on-scroll">
+            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal in" style="--d: 420ms;">
                 <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center font-bold">
                     <i data-lucide="crop" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                 </div>
@@ -576,7 +698,7 @@
                 <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Dễ dàng căn chỉnh 4 góc cắt, loại bỏ phần thừa của mặt bàn hay khung nền xung quanh văn bản.</p>
             </div>
 
-            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal-on-scroll">
+            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal in" style="--d: 460ms;">
                 <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center font-bold">
                     <i data-lucide="eye" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                 </div>
@@ -584,7 +706,7 @@
                 <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Bộ lọc làm rõ chữ xem trước trực tiếp ngay trên khung cắt canvas trước khi chốt lưu trang.</p>
             </div>
 
-            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal-on-scroll">
+            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal in" style="--d: 500ms;">
                 <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center font-bold">
                     <i data-lucide="zap" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                 </div>
@@ -593,6 +715,72 @@
             </div>
         </div>
     </section>
+
+    <!-- WIDGET CÂU HỎI THƯỜNG GẶP (FAQ ACCORDION WIDGET) -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-title reveal in" style="--d: 520ms;">
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-2">
+            <i data-lucide="help-circle" class="w-5 h-5 text-sapphire-500"></i>
+            <span>Câu hỏi thường gặp (FAQ)</span>
+        </h2>
+    </div>
+
+    <section class="pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full z-10">
+        <div class="space-y-3">
+            
+            <details class="glass-card rounded-2xl p-4 cursor-pointer group reveal in" style="--d: 540ms;">
+                <summary class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center justify-between list-none">
+                    <span class="flex items-center space-x-2">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-500"></i>
+                        <span>Ảnh của tôi có bị tải lên server bên ngoài không?</span>
+                    </span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
+                </summary>
+                <p class="mt-2.5 text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed pl-6 border-l-2 border-sapphire-500">
+                    Không. AnhsangPDF xử lý 100% hình ảnh ngay trên trình duyệt di động hoặc máy tính của bạn thông qua Canvas HTML5 & Web Workers, bảo đảm bảo mật tuyệt đối cho mọi tài liệu cá nhân.
+                </p>
+            </details>
+
+            <details class="glass-card rounded-2xl p-4 cursor-pointer group reveal in" style="--d: 570ms;">
+                <summary class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center justify-between list-none">
+                    <span class="flex items-center space-x-2">
+                        <i data-lucide="layers" class="w-4 h-4 text-sapphire-500"></i>
+                        <span>Web app hỗ trợ tối đa bao nhiêu trang ảnh mỗi lần xuất PDF?</span>
+                    </span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
+                </summary>
+                <p class="mt-2.5 text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed pl-6 border-l-2 border-sapphire-500">
+                    Hệ thống hỗ trợ nạp tới 80 hình ảnh trong một lượt quét. Bạn có thể tự do kéo thả thay đổi vị trí, nhân bản hoặc áp dụng bộ lọc tài liệu hàng loạt một cách mượt mà.
+                </p>
+            </details>
+
+            <details class="glass-card rounded-2xl p-4 cursor-pointer group reveal in" style="--d: 600ms;">
+                <summary class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center justify-between list-none">
+                    <span class="flex items-center space-x-2">
+                        <i data-lucide="stamp" class="w-4 h-4 text-indigo-500"></i>
+                        <span>Cách chèn mộc bản quyền (Watermark) vào file PDF xuất ra?</span>
+                    </span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
+                </summary>
+                <p class="mt-2.5 text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed pl-6 border-l-2 border-sapphire-500">
+                    Bạn chỉ cần nhấp nút <strong>"Tạo bản quyền"</strong> góc phải phần Tên Tệp & Chất Lượng Nén để bật khung thiết lập, điền nội dung chữ chìm mong muốn và xuất file.
+                </p>
+            </details>
+
+        </div>
+    </section>
+
+    <!-- CTA-BAND WIDGET (TỰ ĐỘNG CĂN NGANG VỪA VẶN VỚI MÀN HÌNH & REVEAL IN ANIMATION) -->
+    <div class="w-full px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-12">
+        <div class="sapphire-gradient-btn w-full p-6 sm:p-10 rounded-3xl text-white text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6 shadow-2xl reveal in" style="--d: 630ms;">
+            <div class="space-y-2 max-w-xl">
+                <h2 class="text-xl sm:text-3xl font-extrabold tracking-tight">Xuất Tệp PDF Chuẩn Sắc Nét Với AnhsangPDF</h2>
+                <p class="text-xs sm:text-sm text-blue-100 opacity-90">Hoàn toàn miễn phí, xử lý bảo mật trên trình duyệt của bạn không tải ảnh lên máy chủ bên ngoài.</p>
+            </div>
+            <a href="#convert-section" class="glass-input bg-white text-sapphire-600 font-extrabold text-xs sm:text-sm px-6 py-3.5 rounded-2xl hover:bg-slate-100 transition shrink-0 uppercase tracking-wide">
+                Bắt đầu ngay
+            </a>
+        </div>
+    </div>
 
     <!-- FOOTER CHUYÊN NGHIỆP -->
     <footer class="mt-auto glass-header py-6 px-4 text-xs font-semibold text-slate-600 dark:text-blue-300/80 z-10">
@@ -617,7 +805,7 @@
         </div>
     </footer>
 
-    <!-- EDIT MODAL (WITH COMPACT FILTER THUMBNAILS & LUCIDE ICONS) -->
+    <!-- EDIT MODAL -->
     <div id="editModal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 opacity-0 pointer-events-none transition-all duration-300">
         <div class="glass-panel w-full max-w-xl rounded-3xl p-4 sm:p-5 border border-white/80 dark:border-blue-500/40 shadow-2xl bg-white/95 dark:bg-slate-950/95 space-y-3.5 max-h-[96vh] flex flex-col">
             
@@ -683,13 +871,13 @@
         </div>
     </div>
 
-    <!-- CHIBI BÓNG NƯỚC PASTEL OCEAN WITH SPEECH BUBBLE & ANIMATED MOUTH -->
+    <!-- CHIBI BÓNG NƯỚC (TRUNG TÂM PHÁT THÔNG BÁO CHÍNH THỨC CỦA WEB APP) -->
     <div id="chibiBubbleContainer" class="fixed bottom-4 right-4 z-40 pointer-events-auto flex flex-col items-end group transition-all duration-300">
         
         <!-- Interactive Speech Bubble -->
-        <div id="chibiSpeechBubble" class="mb-2 max-w-[200px] sm:max-w-[240px] p-2.5 sm:p-3 rounded-2xl glass-panel bg-white/90 dark:bg-slate-900/90 text-slate-800 dark:text-blue-100 text-[11px] font-bold shadow-xl border border-blue-200/80 dark:border-blue-500/30 transition-all duration-300 opacity-0 translate-y-2 pointer-events-none relative">
+        <div id="chibiSpeechBubble" class="mb-2 max-w-[220px] sm:max-w-[260px] p-2.5 sm:p-3 rounded-2xl glass-panel bg-white/95 dark:bg-slate-900/95 text-slate-800 dark:text-blue-100 text-[11px] font-bold shadow-2xl border border-blue-200/80 dark:border-blue-500/30 transition-all duration-300 opacity-0 translate-y-2 pointer-events-none relative">
             <span id="chibiSpeechText">Xin chào! Tôi có thể giúp gì cho bạn?</span>
-            <div class="absolute -bottom-1.5 right-6 w-3 h-3 bg-white/90 dark:bg-slate-900/90 rotate-45 border-r border-b border-blue-200/80 dark:border-blue-500/30"></div>
+            <div class="absolute -bottom-1.5 right-6 w-3 h-3 bg-white/95 dark:bg-slate-900/95 rotate-45 border-r border-b border-blue-200/80 dark:border-blue-500/30"></div>
         </div>
 
         <div class="relative cursor-pointer" onclick="triggerChibiInteraction()">
@@ -708,24 +896,91 @@
 
             <!-- Chibi Eyes & Dynamic Mouth -->
             <div aria-hidden="true" class="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center space-y-1">
-                <!-- Eye Pair -->
                 <div id="chibiEyes" class="flex items-center gap-[10px] sm:gap-[12px] transition-transform duration-100 ease-out">
                     <span class="block bg-slate-900 dark:bg-slate-950" style="width: 8px; height: 10px; border-radius: 50%; box-shadow: rgba(255, 255, 255, 0.8) -1px -1px 2px inset; animation: 4.5s ease-in-out 0s infinite normal none running siri-blink;"></span>
                     <span class="block bg-slate-900 dark:bg-slate-950" style="width: 8px; height: 10px; border-radius: 50%; box-shadow: rgba(255, 255, 255, 0.8) -1px -1px 2px inset; animation: 4.5s ease-in-out 0s infinite normal none running siri-blink;"></span>
                 </div>
-                <!-- Dynamic Animated Mouth -->
                 <div id="chibiMouth" class="w-2.5 h-1 bg-slate-800 dark:bg-slate-900 rounded-full transition-all duration-300"></div>
             </div>
         </div>
     </div>
 
-    <!-- TOAST NOTIFICATION SYSTEM -->
-    <div id="toast" class="fixed bottom-5 left-5 z-50 glass-panel bg-white/95 dark:bg-slate-900/95 text-slate-900 dark:text-white px-4 py-3 rounded-2xl text-xs font-bold shadow-2xl transition-all duration-300 opacity-0 -translate-y-4 pointer-events-none border border-slate-200 dark:border-blue-500/40 flex items-center space-x-3">
-        <div class="w-6 h-6 rounded-full bg-sapphire-100 text-sapphire-600 dark:bg-blue-900/80 dark:text-blue-400 flex items-center justify-center shrink-0">
-            <i data-lucide="check" class="w-3.5 h-3.5"></i>
-        </div>
-        <span id="toastMsg">Thông báo</span>
-    </div>
+    <!-- FIREBASE INTEGRATION ENGINE (MODULAR INITIALIZATION) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, updateDoc, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // 1. Cấu hình App ID và biến toàn cục
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'anhsangpdf-app-default';
+        let db = null;
+        let auth = null;
+        let statsDocRef = null;
+
+        async function initFirebaseStats() {
+            try {
+                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                    const firebaseConfig = JSON.parse(__firebase_config);
+                    const app = initializeApp(firebaseConfig);
+                    db = getFirestore(app);
+                    auth = getAuth(app);
+
+                    // 2. Xác thực Auth bắt buộc trước khi query
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+
+                    // 3. Đặt đường dẫn lưu trữ theo đúng quy tắc (Strict Path)
+                    statsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'stats', 'counter');
+
+                    // 4. Lắng nghe thay đổi đếm số trang theo thời gian thực (Real-time)
+                    onSnapshot(statsDocRef, (snap) => {
+                        if (snap.exists()) {
+                            const data = snap.data();
+                            if (data && typeof data.totalFiles === 'number') {
+                                window.updateStatsDisplay(data.totalFiles);
+                                try { localStorage.setItem('anhsangpdf_created_count', data.totalFiles.toString()); } catch(e){}
+                            }
+                        } else {
+                            // Tạo document mặc định nếu chưa tồn tại
+                            setDoc(statsDocRef, { totalFiles: 20, updatedAt: new Date().toISOString() }, { merge: true });
+                            window.updateStatsDisplay(20);
+                        }
+                    }, (err) => {
+                        console.warn("Lỗi kết nối Firebase Real-time, chuyển sang bộ đếm Local Storage:", err);
+                    });
+                }
+            } catch (error) {
+                console.warn("Khởi tạo Firebase thất bại, kích hoạt chế độ dự phòng Offline:", error);
+            }
+        }
+
+        // 5. Hàm tăng số đếm nguyên tử (Atomic Increment) khi tạo PDF thành công
+        window.incrementFirebaseCounter = async function(count) {
+            if (statsDocRef && auth?.currentUser) {
+                try {
+                    await updateDoc(statsDocRef, {
+                        totalFiles: increment(count),
+                        updatedAt: new Date().toISOString()
+                    });
+                    return true;
+                } catch (e) {
+                    try {
+                        await setDoc(statsDocRef, { totalFiles: 20 + count, updatedAt: new Date().toISOString() }, { merge: true });
+                        return true;
+                    } catch (err) {
+                        console.warn("Không thể đồng bộ số liệu lên Firestore:", err);
+                    }
+                }
+            }
+            return false;
+        };
+
+        // Kích hoạt khởi tạo
+        initFirebaseStats();
+    </script>
 
     <!-- JAVASCRIPT APP LOGIC -->
     <script>
@@ -735,6 +990,24 @@
         let editingIndex = -1;
         let cropperInstance = null;
         let selectedFilter = 'original';
+        let filterRenderToken = 0;
+        let isBatchProcessing = false;
+        let chibiTimer = null;
+        const MAX_IMAGE_BYTES = 30 * 1024 * 1024;
+        const MAX_IMAGE_COUNT = 80;
+
+        function escapeHTML(value) {
+            return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+        }
+
+        function loadImage(src) {
+            return new Promise((resolve, reject) => {
+                const image = new Image();
+                image.onload = () => resolve(image);
+                image.onerror = () => reject(new Error('Không thể đọc dữ liệu ảnh.'));
+                image.src = src;
+            });
+        }
 
         const FILTER_DEFINITIONS = [
             { id: 'original', name: 'Gốc' },
@@ -751,8 +1024,8 @@
             "Bạn có thể kéo thả để đổi thứ tự các trang PDF đó nha!",
             "Hãy thử bộ lọc 'Tài liệu' để chữ đậm và nét hơn nhé!",
             "Đừng quên đặt tên file trước khi xuất PDF nha!",
-            "Mọi dữ liệu của bạn đều bảo mật 100% trên máy nè!",
-            "Cần thêm Watermark bảo mật? Mình có tính năng đó bên dưới đó!",
+            "Nhấp chọn icon Dấu Mộc nếu bạn cần chèn bản quyền nhé!",
+            "Cần thêm Watermark bảo mật? Nhấp nút 'Tạo bản quyền' nha!",
             "Web app AnhsangPDF luôn sẵn sàng hỗ trợ bạn nè ✨"
         ];
 
@@ -765,17 +1038,21 @@
 
         /* INITIALIZATION */
         window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('anhsangpdf-theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
             lucide.createIcons();
             initUploadListeners();
             initSortable();
             buildFilterUI();
             initScrollReveal();
             initChibiEyeTracking();
+            updateDashboardStats(0);
             startChibiAutoSpeech();
         });
 
         function toggleDarkMode() {
             const isDark = document.documentElement.classList.toggle('dark');
+            try { localStorage.setItem('anhsangpdf-theme', isDark ? 'dark' : 'light'); } catch (e) {}
             const icon = document.getElementById('dark-icon');
             if (icon) {
                 icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
@@ -787,20 +1064,41 @@
             imageInput.click();
         }
 
+        /* WATERMARK TOGGLE FUNCTION */
+        function toggleWatermarkOptions() {
+            const container = document.getElementById('watermarkContainer');
+            const btn = document.getElementById('watermarkStampBtn');
+            if (!container) return;
+
+            const isHidden = container.classList.contains('hidden');
+            if (isHidden) {
+                container.classList.remove('hidden');
+                btn.classList.add('bg-indigo-100', 'dark:bg-indigo-900/60', 'border-indigo-400');
+                speakChibi("Đã mở cấu hình dấu mộc bản quyền!");
+            } else {
+                container.classList.add('hidden');
+                btn.classList.remove('bg-indigo-100', 'dark:bg-indigo-900/60', 'border-indigo-400');
+            }
+        }
+
         /* SCROLL REVEAL ANIMATIONS */
         function initScrollReveal() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add('revealed');
+                        entry.target.classList.add('in');
                     }
                 });
             }, { threshold: 0.1 });
 
-            document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         }
 
-        /* CHIBI COMPANION INTERACTION & EYE TRACKING */
+        /* CHIBI COMPANION SPEECH NOTIFICATION SYSTEM */
+        function speakChibi(text) {
+            triggerChibiInteraction(text);
+        }
+
         function initChibiEyeTracking() {
             const chibiEyes = document.getElementById('chibiEyes');
             if (!chibiEyes) return;
@@ -833,33 +1131,27 @@
             const text = customText || CHIBI_QUOTES[Math.floor(Math.random() * CHIBI_QUOTES.length)];
             speechText.innerText = text;
 
-            // Mouth animations
             mouth.classList.add('chibi-mouth-talking');
 
-            // Show Bubble
             bubble.classList.remove('opacity-0', 'translate-y-2', 'pointer-events-none');
             bubble.classList.add('opacity-100', 'translate-y-0');
 
+            clearTimeout(chibiTimer);
+            
             setTimeout(() => {
                 mouth.classList.remove('chibi-mouth-talking');
             }, 2500);
 
-            setTimeout(() => {
+            chibiTimer = setTimeout(() => {
                 bubble.classList.remove('opacity-100', 'translate-y-0');
                 bubble.classList.add('opacity-0', 'translate-y-2', 'pointer-events-none');
-            }, 6000);
+            }, 6500);
         }
 
         function startChibiAutoSpeech() {
             setTimeout(() => {
-                triggerChibiInteraction("Chào mừng bạn tới AnhsangPDF! Hãy chọn ảnh để quét ngay nhé.");
-            }, 2000);
-
-            setInterval(() => {
-                if (Math.random() > 0.4) {
-                    triggerChibiInteraction();
-                }
-            }, 20000);
+                speakChibi('Chào mừng bạn tới AnhsangPDF! Hãy chọn ảnh để bắt đầu nhé.');
+            }, 1200);
         }
 
         /* 1. UPLOAD & FILE PROCESSING */
@@ -897,50 +1189,62 @@
         }
 
         async function handleFiles(files) {
-            const validFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
-            if (validFiles.length === 0) {
-                showToast("Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, WEBP)!");
+            const incoming = Array.from(files || []);
+            const validFiles = incoming.filter(file => file.type.startsWith('image/') && ['image/jpeg','image/png','image/webp','image/gif','image/bmp'].includes(file.type));
+            const rejected = incoming.length - validFiles.length;
+            const remaining = Math.max(0, MAX_IMAGE_COUNT - imagesData.length);
+            const queue = validFiles.slice(0, remaining);
+            let added = 0;
+            let failed = 0;
+
+            if (!queue.length) {
+                speakChibi(remaining === 0 ? `Đã đạt giới hạn ${MAX_IMAGE_COUNT} trang.` : 'Vui lòng chọn tệp ảnh hợp lệ.');
                 return;
             }
-
-            for (const file of validFiles) {
+            speakChibi(`Đang đọc ${queue.length} ảnh tài liệu của bạn...`);
+            for (const file of queue) {
+                if (file.size > MAX_IMAGE_BYTES) { failed++; continue; }
                 try {
                     const item = await processSingleImage(file);
                     imagesData.push(item);
+                    added++;
                 } catch (err) {
-                    console.error(err);
+                    failed++;
+                    console.error('Image import failed:', file.name, err);
                 }
             }
-
             renderImageGrid();
-            updateDashboardStats();
-            showToast(`Đã thêm ${validFiles.length} hình ảnh trang quét thành công!`);
-            triggerChibiInteraction(`Tuyệt vời! Đã thêm ${validFiles.length} trang tài liệu mới.`);
+            
+            if (added > 0) {
+                speakChibi(`Đã nạp thành công ${added} trang tài liệu mới! Bạn có thể chỉnh sửa bộ lọc hoặc thay đổi thứ tự.`);
+            } else if (failed > 0 || rejected > 0) {
+                speakChibi(`Có ${failed + rejected} tệp bị bỏ qua do lỗi định dạng hoặc vượt quá dung lượng.`);
+            }
         }
 
         function processSingleImage(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.onload = () => {
+                reader.onload = async (e) => {
+                    try {
+                        const img = await loadImage(e.target.result);
+                        if (!img.naturalWidth || !img.naturalHeight) throw new Error('Ảnh không có kích thước hợp lệ.');
                         resolve({
-                            id: 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                            id: 'img_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
                             name: file.name,
                             originalSrc: e.target.result,
                             filterSrc: e.target.result,
                             processedSrc: e.target.result,
-                            width: img.width,
-                            height: img.height,
+                            width: img.naturalWidth,
+                            height: img.naturalHeight,
                             filter: 'original',
                             cropData: null,
-                            rotation: 0
+                            rotation: 0,
+                            mimeType: file.type
                         });
-                    };
-                    img.onerror = reject;
-                    img.src = e.target.result;
+                    } catch (err) { reject(err); }
                 };
-                reader.onerror = reject;
+                reader.onerror = () => reject(new Error('Không đọc được tệp ảnh.'));
                 reader.readAsDataURL(file);
             });
         }
@@ -971,7 +1275,7 @@
             imagesList.innerHTML = '';
             imagesData.forEach((img, index) => {
                 const card = document.createElement('div');
-                card.className = 'glass-card rounded-2xl overflow-hidden border border-slate-200 dark:border-blue-500/20 flex flex-col relative group transition duration-300';
+                card.className = 'image-card glass-card rounded-2xl overflow-hidden border border-slate-200 dark:border-blue-500/20 flex flex-col relative group transition duration-300';
                 card.setAttribute('data-id', img.id);
 
                 const filterName = FILTER_DEFINITIONS.find(f => f.id === img.filter)?.name || 'Gốc';
@@ -995,35 +1299,61 @@
 
                     <div class="p-2.5 sm:p-3 bg-white/80 dark:bg-slate-900/80 flex items-center justify-between text-xs mt-auto border-t border-slate-200 dark:border-blue-900/40">
                         <div class="truncate pr-2">
-                            <p class="font-bold text-slate-800 dark:text-white truncate">${img.name}</p>
+                            <p class="font-bold text-slate-800 dark:text-white truncate" title="${escapeHTML(img.name)}">${escapeHTML(img.name)}</p>
                             <p class="text-[10px] text-slate-400 dark:text-blue-400/70 font-mono">${img.width}x${img.height}px</p>
                         </div>
-                        <button onclick="openEditModal(${index})" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-sapphire-50 dark:bg-blue-900/60 hover:bg-sapphire-600 hover:text-white text-sapphire-600 dark:text-blue-300 flex items-center justify-center shrink-0 font-bold transition border border-sapphire-200 dark:border-blue-500/30" title="Chỉnh sửa / Cắt / Bộ lọc">
+                        <div class="flex items-center gap-1 shrink-0"><button onclick="duplicateImage(${index})" class="w-7 h-7 rounded-xl glass-input text-slate-600 dark:text-blue-300 flex items-center justify-center" title="Nhân bản trang"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button><button onclick="openEditModal(${index})" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-sapphire-50 dark:bg-blue-900/60 hover:bg-sapphire-600 hover:text-white text-sapphire-600 dark:text-blue-300 flex items-center justify-center shrink-0 font-bold transition border border-sapphire-200 dark:border-blue-500/30" title="Chỉnh sửa / Cắt / Bộ lọc">
                             <i data-lucide="settings" class="w-4 h-4"></i>
-                        </button>
+                        </button></div>
                     </div>
                 `;
                 imagesList.appendChild(card);
             });
             lucide.createIcons();
-            updateDashboardStats();
         }
 
         function removeImage(index) {
+            if (!imagesData[index]) return;
             imagesData.splice(index, 1);
             renderImageGrid();
-            showToast("Đã xóa trang quét!");
+            speakChibi("Đã xóa trang khỏi danh sách!");
+        }
+
+        function duplicateImage(index) {
+            const item = imagesData[index];
+            if (!item) return;
+            if (imagesData.length >= MAX_IMAGE_COUNT) { speakChibi(`Chỉ hỗ trợ tối đa ${MAX_IMAGE_COUNT} trang.`); return; }
+            const copy = {...item, id: 'img_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8), name: item.name.replace(/\.[^.]+$/, '') + ' - bản sao'};
+            imagesData.splice(index + 1, 0, copy);
+            renderImageGrid();
+            speakChibi('Đã nhân bản trang tài liệu thành công.');
         }
 
         function clearAllImages() {
+            if (!imagesData.length) return;
             imagesData = [];
             renderImageGrid();
-            showToast("Đã làm sạch danh sách trang!");
+            speakChibi("Đã dọn dẹp sạch danh sách các trang!");
         }
 
-        function updateDashboardStats() {
-            const statProcessed = document.getElementById('stat-processed');
-            if(statProcessed) statProcessed.innerText = imagesData.length;
+        /* NÂNG CẤP LƯU DATA TỔNG SỐ TRANG/PDF VÀO FIREBASE HOẶC FALLBACK LOCALSTORAGE */
+        window.updateStatsDisplay = function(val) {
+            const heroStatFiles = document.getElementById('hero-stat-files');
+            if (heroStatFiles) heroStatFiles.innerText = val.toLocaleString('vi-VN');
+        };
+
+        async function updateDashboardStats(addedCount = 0) {
+            let storedVal = parseInt(localStorage.getItem('anhsangpdf_created_count') || '20', 10);
+            if (addedCount > 0) {
+                storedVal += addedCount;
+                try { localStorage.setItem('anhsangpdf_created_count', storedVal.toString()); } catch(e) {}
+                
+                // Đồng bộ tăng số lượng trang lên Firebase
+                if (typeof window.incrementFirebaseCounter === 'function') {
+                    await window.incrementFirebaseCounter(addedCount);
+                }
+            }
+            window.updateStatsDisplay(storedVal);
         }
 
         /* 4. SCAN IMAGE FILTERS ENGINE */
@@ -1074,21 +1404,20 @@
 
         async function getFilteredImageSrc(originalSrc, filterType) {
             if (filterType === 'original') return originalSrc;
-
-            const tempImg = new Image();
-            await new Promise(r => { tempImg.onload = r; tempImg.src = originalSrc; });
-
+            const tempImg = await loadImage(originalSrc);
             const canvas = document.createElement('canvas');
-            canvas.width = tempImg.width;
-            canvas.height = tempImg.height;
+            canvas.width = tempImg.naturalWidth;
+            canvas.height = tempImg.naturalHeight;
             const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            if (!ctx) throw new Error('Trình duyệt không hỗ trợ xử lý Canvas.');
             ctx.imageSmoothingEnabled = true;
             ctx.imageSmoothingQuality = 'high';
             ctx.drawImage(tempImg, 0, 0);
-
             applyScanFilterToCanvas(ctx, canvas.width, canvas.height, filterType);
-            const qualityOpt = parseFloat(document.getElementById('imageQuality')?.value || 0.95);
-            return canvas.toDataURL('image/jpeg', qualityOpt);
+            const qualityOpt = Math.min(1, Math.max(0.5, parseFloat(document.getElementById('imageQuality')?.value || 0.95)));
+            const result = canvas.toDataURL('image/jpeg', qualityOpt);
+            canvas.width = 0; canvas.height = 0;
+            return result;
         }
 
         /* 5. CROPPER MODAL CONTROLLER & COMPACT LIVE FILTERS */
@@ -1126,45 +1455,49 @@
 
         async function selectFilterOption(filterId) {
             selectedFilter = filterId;
+            const token = ++filterRenderToken;
             document.querySelectorAll('.scan-filter-item').forEach((el, idx) => {
-                if (FILTER_DEFINITIONS[idx].id === filterId) {
-                    el.classList.add('active');
-                } else {
-                    el.classList.remove('active');
-                }
+                el.classList.toggle('active', FILTER_DEFINITIONS[idx]?.id === filterId);
             });
-
-            if (cropperInstance && editingIndex >= 0) {
-                const imgObj = imagesData[editingIndex];
-                const newFilterSrc = await getFilteredImageSrc(imgObj.originalSrc, selectedFilter);
-                
-                const currentCropData = cropperInstance.getData();
-                cropperInstance.replace(newFilterSrc);
-                setTimeout(() => {
-                    cropperInstance.setData(currentCropData);
-                }, 50);
+            if (cropperInstance && editingIndex >= 0 && imagesData[editingIndex]) {
+                const cropperImg = document.getElementById('cropperImage');
+                try {
+                    const imgObj = imagesData[editingIndex];
+                    const currentCropData = cropperInstance.getData(true);
+                    const newFilterSrc = await getFilteredImageSrc(imgObj.originalSrc, filterId);
+                    if (token !== filterRenderToken || !cropperInstance) return;
+                    const restoreCrop = () => {
+                        cropperImg.removeEventListener('ready', restoreCrop);
+                        if (token === filterRenderToken && cropperInstance) cropperInstance.setData(currentCropData);
+                    };
+                    cropperImg.addEventListener('ready', restoreCrop, { once: true });
+                    cropperInstance.replace(newFilterSrc);
+                } catch (err) { console.error(err); speakChibi('Không thể xem trước bộ lọc: ' + err.message); }
             }
         }
 
         async function openEditModal(index) {
-            editingIndex = index;
             const imgObj = imagesData[index];
+            if (!imgObj) return;
+            editingIndex = index;
+            const openToken = ++filterRenderToken;
             selectedFilter = imgObj.filter || 'original';
             buildFilterUI();
 
             const cropperImg = document.getElementById('cropperImage');
-            const initialSrc = await getFilteredImageSrc(imgObj.originalSrc, selectedFilter);
+            let initialSrc;
+            try { initialSrc = await getFilteredImageSrc(imgObj.originalSrc, selectedFilter); }
+            catch (err) { speakChibi('Không thể mở chỉnh sửa ảnh: ' + err.message); editingIndex = -1; return; }
+            if (openToken !== filterRenderToken || imagesData[index] !== imgObj) return;
+            if (cropperInstance) { cropperInstance.destroy(); cropperInstance = null; }
             cropperImg.src = initialSrc;
 
             const modal = document.getElementById('editModal');
             modal.classList.remove('opacity-0', 'pointer-events-none');
             modal.classList.add('opacity-100');
 
-            if (cropperInstance) {
-                cropperInstance.destroy();
-            }
-
             setTimeout(() => {
+                if (editingIndex !== index || !document.getElementById('editModal').classList.contains('opacity-100')) return;
                 cropperInstance = new Cropper(cropperImg, {
                     viewMode: 1,
                     autoCropArea: 0.95,
@@ -1180,6 +1513,7 @@
         }
 
         function closeEditModal() {
+            filterRenderToken++;
             const modal = document.getElementById('editModal');
             modal.classList.remove('opacity-100');
             modal.classList.add('opacity-0', 'pointer-events-none');
@@ -1196,7 +1530,7 @@
 
         function flipCropper(type) {
             if (cropperInstance) {
-                if (type === 'h') cropperInstance.scaleX(-cropperInstance.getData().scaleX || -1);
+                if (type === 'h') { const current = cropperInstance.getData().scaleX || 1; cropperInstance.scaleX(current * -1); }
             }
         }
 
@@ -1223,179 +1557,157 @@
 
                     renderImageGrid();
                     closeEditModal();
-                    showToast("Đã lưu vùng cắt và bộ lọc trang quét sắc nét!");
+                    speakChibi("Đã lưu vùng cắt và bộ lọc trang quét sắc nét!");
                 }
             }
         }
 
         async function applyFilterToAllImages() {
-            if (imagesData.length === 0) return;
-
-            showToast(`Đang áp dụng bộ lọc "${FILTER_DEFINITIONS.find(f => f.id === selectedFilter)?.name}" cho tất cả trang...`);
-
-            const qualityOpt = parseFloat(document.getElementById('imageQuality')?.value || 0.95);
-
-            for (let i = 0; i < imagesData.length; i++) {
-                const item = imagesData[i];
-                item.filter = selectedFilter;
-
-                const filteredDataUrl = await getFilteredImageSrc(item.originalSrc, selectedFilter);
-                
-                const tempImg = new Image();
-                await new Promise(r => { tempImg.onload = r; tempImg.src = filteredDataUrl; });
-
-                const canvas = document.createElement('canvas');
-                canvas.width = tempImg.width;
-                canvas.height = tempImg.height;
-                const ctx = canvas.getContext('2d');
-                ctx.imageSmoothingEnabled = true;
-                ctx.imageSmoothingQuality = 'high';
-                ctx.drawImage(tempImg, 0, 0);
-
-                item.processedSrc = canvas.toDataURL('image/jpeg', qualityOpt);
+            if (!imagesData.length || isBatchProcessing) return;
+            isBatchProcessing = true;
+            const btns = Array.from(document.querySelectorAll('button[onclick="applyFilterToAllImages()"]'));
+            btns.forEach(btn => { btn.disabled = true; btn.classList.add('opacity-50'); });
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const progressVal = document.getElementById('progressVal');
+            const progressText = document.getElementById('progressText');
+            progressContainer.classList.remove('hidden');
+            let succeeded = 0, failed = 0;
+            const filterName = FILTER_DEFINITIONS.find(f => f.id === selectedFilter)?.name || selectedFilter;
+            const activeEditIndex = editingIndex;
+            try {
+                if (cropperInstance && activeEditIndex >= 0 && imagesData[activeEditIndex]) {
+                    const activeItem = imagesData[activeEditIndex];
+                    const liveCanvas = cropperInstance.getCroppedCanvas({ imageSmoothingEnabled: true, imageSmoothingQuality: 'high', fillColor: '#ffffff' });
+                    if (liveCanvas) {
+                        const q = Math.min(1, Math.max(0.5, parseFloat(document.getElementById('imageQuality')?.value || 0.95)));
+                        activeItem.processedSrc = liveCanvas.toDataURL('image/jpeg', q);
+                        activeItem.cropData = cropperInstance.getData();
+                        activeItem.filter = selectedFilter;
+                        activeItem.width = liveCanvas.width; activeItem.height = liveCanvas.height;
+                    }
+                }
+                for (let i = 0; i < imagesData.length; i++) {
+                    const item = imagesData[i];
+                    progressText.innerText = `Đang xử lý trang ${i + 1}/${imagesData.length}...`;
+                    try {
+                        if (i !== activeEditIndex) item.processedSrc = await getFilteredImageSrc(item.processedSrc || item.originalSrc, selectedFilter);
+                        item.filter = selectedFilter;
+                        const rendered = await loadImage(item.processedSrc);
+                        item.width = rendered.naturalWidth; item.height = rendered.naturalHeight;
+                        succeeded++;
+                    } catch (err) {
+                        failed++;
+                        console.error(`Filter failed on page ${i + 1}:`, err);
+                    }
+                    const pct = Math.round(((i + 1) / imagesData.length) * 100);
+                    progressBar.style.width = pct + '%'; progressVal.innerText = pct + '%';
+                    await new Promise(resolve => setTimeout(resolve, 0));
+                }
+                renderImageGrid();
+                speakChibi(`Đã áp dụng thành công bộ lọc '${filterName}' cho toàn bộ ${succeeded} trang tài liệu!`);
+            } finally {
+                isBatchProcessing = false;
+                btns.forEach(btn => { btn.disabled = false; btn.classList.remove('opacity-50'); });
+                setTimeout(() => { progressContainer.classList.add('hidden'); progressBar.style.width = '0%'; }, 1200);
             }
-
-            renderImageGrid();
-            showToast("Đã áp dụng bộ lọc nét chữ cho tất cả trang thành công!");
-        }
-
-        function updateWatermarkPreview() {
-            showToast("Đã cập nhật dấu bản quyền Watermark!");
         }
 
         /* 6. MAIN PDF GENERATOR ENGINE WITH WATERMARK SUPPORT */
         async function generatePDF() {
-            if (imagesData.length === 0) {
-                showToast("Vui lòng nạp ít nhất 1 trang ảnh quét!");
-                triggerChibiInteraction("Bạn chưa chọn ảnh nào nè! Hãy nạp ít nhất 1 trang nhé.");
-                return;
-            }
-
+            if (!imagesData.length) { speakChibi('Vui lòng nạp ít nhất 1 trang ảnh quét trước khi xuất PDF nha!'); return; }
             const generateBtn = document.getElementById('generateBtn');
             const progressContainer = document.getElementById('progressContainer');
             const progressBar = document.getElementById('progressBar');
             const progressVal = document.getElementById('progressVal');
             const progressText = document.getElementById('progressText');
-
+            if (!window.jspdf?.jsPDF) { speakChibi('Thư viện xuất PDF chưa tải xong, bạn vui lòng chờ tí hoặc tải lại trang.'); return; }
             generateBtn.disabled = true;
             generateBtn.classList.add('opacity-60', 'cursor-not-allowed');
             progressContainer.classList.remove('hidden');
-
-            triggerChibiInteraction("Đang tiến hành xuất file PDF chất lượng cao cho bạn...");
-
+            progressBar.style.width = '0%'; progressVal.innerText = '0%';
             try {
                 const { jsPDF } = window.jspdf;
                 const pageSizeOpt = document.getElementById('pageSize').value;
                 const orientationOpt = document.getElementById('pageOrientation').value;
-                const marginOpt = parseFloat(document.getElementById('pageMargin').value);
-                const qualityOpt = parseFloat(document.getElementById('imageQuality').value);
+                const marginOpt = Math.max(0, Math.min(40, parseFloat(document.getElementById('pageMargin').value) || 0));
+                const qualityOpt = Math.min(1, Math.max(0.5, parseFloat(document.getElementById('imageQuality').value) || 0.95));
                 
-                const watermarkTxt = document.getElementById('watermarkText')?.value.trim();
-
+                // Read Watermark input
+                const watermarkContainer = document.getElementById('watermarkContainer');
+                const isWatermarkVisible = watermarkContainer && !watermarkContainer.classList.contains('hidden');
+                const watermarkTxt = isWatermarkVisible ? document.getElementById('watermarkText')?.value.trim() : '';
+                const watermarkValue = document.getElementById('watermarkColor')?.value || 'rgba(150,150,150,0.25)';
+                const colorMatch = watermarkValue.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/i);
+                const wmColor = colorMatch ? [Number(colorMatch[1]), Number(colorMatch[2]), Number(colorMatch[3])] : [150,150,150];
+                const wmAlpha = colorMatch && colorMatch[4] !== undefined ? Math.max(0, Math.min(1, Number(colorMatch[4]))) : 0.25;
                 let pdf = null;
 
                 for (let i = 0; i < imagesData.length; i++) {
-                    const pct = Math.round(((i + 1) / imagesData.length) * 100);
-                    progressBar.style.width = pct + '%';
-                    progressVal.innerText = pct + '%';
-                    progressText.innerText = `Đang mã hóa & xuất trang ${i + 1}/${imagesData.length} ở độ nét cao nhất...`;
-
                     const item = imagesData[i];
-                    const imgW = item.width;
-                    const imgH = item.height;
-
-                    let imgOrient = imgW > imgH ? 'landscape' : 'portrait';
-                    let pageOrient = orientationOpt === 'auto' ? imgOrient : orientationOpt;
-
+                    progressText.innerText = `Đang đóng gói trang ${i + 1}/${imagesData.length}...`;
+                    const image = await loadImage(item.processedSrc || item.originalSrc);
+                    const imgW = image.naturalWidth, imgH = image.naturalHeight;
+                    if (!imgW || !imgH) throw new Error(`Trang ${i + 1} có kích thước không hợp lệ.`);
+                    const imgOrient = imgW > imgH ? 'landscape' : 'portrait';
+                    const pageOrient = orientationOpt === 'auto' ? imgOrient : orientationOpt;
+                    const fitFormat = [imgW * 0.2645833333, imgH * 0.2645833333];
                     if (i === 0) {
-                        pdf = new jsPDF({
-                            orientation: pageOrient,
-                            unit: 'mm',
-                            format: pageSizeOpt === 'fit' ? [imgW * 0.264583, imgH * 0.264583] : pageSizeOpt,
-                            compress: true
-                        });
+                        pdf = new jsPDF({ orientation: pageOrient, unit: 'mm', format: pageSizeOpt === 'fit' ? fitFormat : pageSizeOpt, compress: true });
                     } else {
-                        pdf.addPage(
-                            pageSizeOpt === 'fit' ? [imgW * 0.264583, imgH * 0.264583] : pageSizeOpt,
-                            pageOrient
-                        );
+                        pdf.addPage(pageSizeOpt === 'fit' ? fitFormat : pageSizeOpt, pageOrient);
                     }
-
                     const pdfPageW = pdf.internal.pageSize.getWidth();
                     const pdfPageH = pdf.internal.pageSize.getHeight();
-                    const formatType = qualityOpt >= 1.0 ? 'PNG' : 'JPEG';
+                    const canvas = document.createElement('canvas');
+                    canvas.width = imgW; canvas.height = imgH;
+                    const ctx = canvas.getContext('2d');
+                    if (!ctx) throw new Error('Không thể tạo vùng xử lý ảnh cho PDF.');
+                    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, imgW, imgH); ctx.drawImage(image, 0, 0);
+                    const jpegData = canvas.toDataURL('image/jpeg', qualityOpt);
+                    canvas.width = 0; canvas.height = 0;
 
                     if (pageSizeOpt === 'fit') {
-                        pdf.addImage(item.processedSrc, formatType, 0, 0, pdfPageW, pdfPageH, undefined, 'SLOW');
+                        pdf.addImage(jpegData, 'JPEG', 0, 0, pdfPageW, pdfPageH, undefined, 'FAST');
                     } else {
-                        const availW = pdfPageW - marginOpt * 2;
-                        const availH = pdfPageH - marginOpt * 2;
-                        const imgAspect = imgW / imgH;
-                        const availAspect = availW / availH;
-
-                        let renderW, renderH;
-
-                        if (imgAspect > availAspect) {
-                            renderW = availW;
-                            renderH = availW / imgAspect;
-                        } else {
-                            renderH = availH;
-                            renderW = availH * imgAspect;
-                        }
-
-                        const posX = marginOpt + (availW - renderW) / 2;
-                        const posY = marginOpt + (availH - renderH) / 2;
-
-                        pdf.addImage(item.processedSrc, formatType, posX, posY, renderW, renderH, undefined, 'SLOW');
+                        const safeMargin = Math.min(marginOpt, Math.max(0, (Math.min(pdfPageW, pdfPageH) - 1) / 2));
+                        const availW = Math.max(1, pdfPageW - safeMargin * 2);
+                        const availH = Math.max(1, pdfPageH - safeMargin * 2);
+                        const scale = Math.min(availW / imgW, availH / imgH);
+                        const renderW = imgW * scale, renderH = imgH * scale;
+                        pdf.addImage(jpegData, 'JPEG', (pdfPageW - renderW) / 2, (pdfPageH - renderH) / 2, renderW, renderH, undefined, 'FAST');
                     }
-
-                    // Watermark Overlap If Provided
                     if (watermarkTxt) {
-                        pdf.setFontSize(20);
-                        pdf.setTextColor(180, 180, 180);
-                        pdf.text(watermarkTxt, pdfPageW / 2, pdfPageH / 2, {
-                            align: 'center',
-                            angle: 45
-                        });
+                        pdf.setFont('helvetica', 'bold');
+                        pdf.setFontSize(Math.max(12, Math.min(30, pdfPageW / 8)));
+                        pdf.setTextColor(...wmColor);
+                        try { pdf.setGState(new pdf.GState({ opacity: wmAlpha })); } catch (e) {}
+                        pdf.text(watermarkTxt, pdfPageW / 2, pdfPageH / 2, { align: 'center', angle: 45, maxWidth: pdfPageW * 0.8 });
+                        try { pdf.setGState(new pdf.GState({ opacity: 1 })); } catch (e) {}
                     }
-
-                    await new Promise(r => setTimeout(r, 60));
+                    const pct = Math.round(((i + 1) / imagesData.length) * 100);
+                    progressBar.style.width = pct + '%'; progressVal.innerText = pct + '%';
+                    await new Promise(resolve => setTimeout(resolve, 0));
                 }
-
                 let customName = document.getElementById('pdfFilename').value.trim();
                 if (!customName) {
                     const now = new Date();
-                    customName = `DocScan_AnhsangPDF_${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${now.getHours()}${now.getMinutes()}`;
+                    customName = `AnhsangPDF_${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
                 }
-                customName = customName.replace(/\.pdf$/i, '') + '.pdf';
-
-                pdf.save(customName);
-                showToast(`Đã xuất file PDF sắc nét "${customName}" thành công!`);
-                triggerChibiInteraction(`Hoàn thành rồi nhé! File PDF "${customName}" đã được tải về thành công 🎉`);
-
+                customName = customName.replace(/[\\/:*?"<>|]+/g, '_').replace(/\.pdf$/i, '').slice(0, 100) || 'AnhsangPDF';
+                pdf.save(customName + '.pdf');
+                
+                // Cập nhật thống kê đồng bộ Firebase & local
+                await updateDashboardStats(imagesData.length);
+                speakChibi(`Tuyệt vời! Đã xuất xong ${imagesData.length} trang thành tệp ${customName}.pdf cho bạn.`);
             } catch (err) {
-                console.error(err);
-                showToast("Lỗi khi tạo PDF: " + err.message);
+                console.error('PDF export error:', err);
+                speakChibi('Rất tiếc! Không thể xuất tệp PDF: ' + (err?.message || 'Lỗi không xác định'));
             } finally {
                 generateBtn.disabled = false;
                 generateBtn.classList.remove('opacity-60', 'cursor-not-allowed');
-                setTimeout(() => {
-                    progressContainer.classList.add('hidden');
-                    progressBar.style.width = '0%';
-                }, 1500);
+                setTimeout(() => { progressContainer.classList.add('hidden'); progressBar.style.width = '0%'; }, 1500);
             }
-        }
-
-        /* TOAST HELPER */
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').innerText = msg;
-            toast.classList.remove('opacity-0', '-translate-y-4', 'pointer-events-none');
-            toast.classList.add('opacity-100', 'translate-y-0');
-            setTimeout(() => {
-                toast.classList.remove('opacity-100', 'translate-y-0');
-                toast.classList.add('opacity-0', '-translate-y-4', 'pointer-events-none');
-            }, 3000);
         }
     </script>
 </body>
