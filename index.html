@@ -2,13 +2,24 @@
 <html lang="vi" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WikyFile - Sapphire Scan & PDF Studio Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>WikyFile – Ảnh sang PDF, PDF sang Word, Ghép & Chỉnh sửa PDF Online</title>
+    <meta name="description" content="WikyFile: chuyển ảnh sang PDF, PDF sang Word (OCR tiếng Việt), ghép và xóa trang PDF ngay trên trình duyệt. Xử lý cục bộ, bảo mật, dùng được trên điện thoại.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <!-- Khi triển khai, thêm: <link rel="canonical" href="https://TEN-MIEN-CUA-BAN/"> và og:url / og:image -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="WikyFile">
+    <meta property="og:locale" content="vi_VN">
+    <meta property="og:title" content="WikyFile – Ảnh sang PDF, PDF sang Word, Ghép & Chỉnh sửa PDF Online">
+    <meta property="og:description" content="WikyFile: chuyển ảnh sang PDF, PDF sang Word (OCR tiếng Việt), ghép và xóa trang PDF ngay trên trình duyệt. Xử lý cục bộ, bảo mật, dùng được trên điện thoại.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="WikyFile – Ảnh sang PDF, PDF sang Word, Ghép & Chỉnh sửa PDF Online">
+    <meta name="twitter:description" content="WikyFile: chuyển ảnh sang PDF, PDF sang Word (OCR tiếng Việt), ghép và xóa trang PDF ngay trên trình duyệt. Xử lý cục bộ, bảo mật, dùng được trên điện thoại.">
 
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <script>
-        tailwind.config = {
+        if (window.tailwind) tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
@@ -64,22 +75,24 @@
     </script>
 
     <!-- Fonts & Lucide Icons -->
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22WikyFile%22%2C%22short_name%22%3A%22WikyFile%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%231558C9%22%2C%22theme_color%22%3A%22%231558C9%22%7D">
+    <meta name="theme-color" content="#1558C9">
+    <!-- OCR cloud endpoint (optional): set the HTTPS URL of YOUR OCR service here, or in wikyfile-config.json {"ocrEndpoint": "..."}. Never put API keys here. -->
+    <meta name="wikyfile-ocr-endpoint" content="">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script defer src="https://unpkg.com/lucide@0.469.0"></script>
 
     <!-- Cropper.js -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <!-- PDF MERGE / PAGE MANAGEMENT LIBRARIES -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <!-- pdf.js, pdf-lib, jsPDF, Tesseract.js, docx are loaded on demand by WF.load() -->
 
     <!-- jsPDF & SortableJS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 
     <style>
         * {
@@ -368,9 +381,24 @@
         .dark .workspace-toolbar { background: linear-gradient(120deg, rgba(30,58,138,.28), rgba(15,23,42,.7)); }
         .tool-btn:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid rgba(37,99,235,.45); outline-offset: 2px; }
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+
+        /* ---- Pro upgrade: mobile performance & touch ---- */
+        .tab-btn { white-space: nowrap; min-height: 44px; }
+        @media (max-width: 640px), (pointer: coarse) {
+            .glass-header, .glass-panel, .glass-card, .glass-input { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+            .glass-header { background: rgba(255,255,255,.95); } .dark .glass-header { background: rgba(10,16,30,.97); }
+            .glass-panel { background: rgba(255,255,255,.92); } .dark .glass-panel { background: rgba(10,16,30,.94); }
+            .floating-orb { display: none; }
+            .glass-card:hover { transform: none; }
+            button, select, input[type=text], input[type=url] { min-height: 40px; }
+        }
+        #pdfPagesGrid canvas { content-visibility: auto; }
     </style>
+    <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "WebApplication", "name": "WikyFile PDF Studio Pro", "url": "./", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Web (Chrome, Edge, Firefox, Safari; Android, iOS)", "inLanguage": "vi", "description": "WikyFile: chuyển ảnh sang PDF, PDF sang Word (OCR tiếng Việt), ghép và xóa trang PDF ngay trên trình duyệt. Xử lý cục bộ, bảo mật, dùng được trên điện thoại.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "VND"}, "featureList": ["Chuyển ảnh sang PDF", "Cắt, xoay và làm nét ảnh tài liệu", "Chuyển PDF sang Word (.docx) với OCR tiếng Việt và tiếng Anh", "Ghép, sắp xếp và xóa trang PDF", "Chèn dấu bản quyền", "Xử lý cục bộ trên trình duyệt"]}, {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Tệp tin của tôi có bị tải lên máy chủ bên ngoài không?", "acceptedAnswer": {"@type": "Answer", "text": "Mặc định là không. Ảnh và PDF được xử lý ngay trên trình duyệt của bạn. Ngoại lệ duy nhất: nếu quản trị trang cấu hình dịch vụ OCR đám mây và bạn chọn dùng nó cho trang scan, ảnh các trang scan chỉ được gửi đi sau khi bạn xác nhận. Trang chỉ lưu một bộ đếm số trang đã tạo, không lưu tài liệu."}}, {"@type": "Question", "name": "Chuyển PDF sang Word hoạt động như thế nào?", "acceptedAnswer": {"@type": "Answer", "text": "Trang có văn bản được trích xuất trực tiếp. Trang scan được nhận dạng bằng OCR (tiếng Việt và tiếng Anh). Kết quả là bản Markdown trung gian bạn có thể sửa, xem trước, rồi xuất thành tệp .docx có tiêu đề, danh sách, bảng cơ bản và số trang."}}, {"@type": "Question", "name": "PDF scan và chữ viết tay có chuyển được không?", "acceptedAnswer": {"@type": "Answer", "text": "PDF scan được OCR tốt với chữ in rõ nét. Chữ viết tay có độ chính xác thấp với OCR chạy cục bộ; các trang có độ tin cậy thấp được đánh dấu cần kiểm tra. Bảng, công thức và hình ảnh trên trang scan cần chỉnh tay trong bản Markdown."}}, {"@type": "Question", "name": "Tệp Word xuất ra có giống hệt PDF gốc không?", "acceptedAnswer": {"@type": "Answer", "text": "Không đảm bảo giống hoàn toàn. Chế độ Giữ bố cục áp dụng cỡ chữ, căn lề, kích thước trang và ngắt trang. Ô gộp, ảnh nhúng, header/footer và công thức chưa được dựng lại tự động, vì vậy hãy xem trước và chỉnh sửa trước khi tải về."}}, {"@type": "Question", "name": "Tôi có thể xử lý bao nhiêu tệp cùng lúc?", "acceptedAnswer": {"@type": "Answer", "text": "Ảnh sang PDF: tối đa 80 ảnh, mỗi ảnh không quá 30 MB. Chỉnh sửa PDF: tối đa 30 tệp, mỗi tệp không quá 150 MB. PDF sang Word: tối đa 10 tệp, mỗi tệp không quá 150 MB. Bạn có thể bật hoặc tắt xem trước trang để tăng tốc trên máy yếu."}}, {"@type": "Question", "name": "WikyFile có dùng được khi mạng yếu hoặc mất mạng không?", "acceptedAnswer": {"@type": "Answer", "text": "Việc xử lý ảnh và PDF diễn ra trên thiết bị, nhưng các thư viện được tải từ CDN ở lần dùng đầu tiên và OCR cần Internet để tải dữ liệu ngôn ngữ lần đầu. Khi trang được triển khai trên HTTPS cùng tệp sw.js, các thư viện đã tải sẽ được lưu lại để dùng lại khi mất mạng."}}, {"@type": "Question", "name": "Tệp PDF có mật khẩu thì sao?", "acceptedAnswer": {"@type": "Answer", "text": "WikyFile không mở được PDF được bảo vệ bằng mật khẩu. Hãy dùng bản không khóa rồi tải lại."}}, {"@type": "Question", "name": "Cách chèn dấu bản quyền (watermark) vào PDF xuất ra?", "acceptedAnswer": {"@type": "Answer", "text": "Ở tab Ảnh sang PDF, bấm nút \"Tạo bản quyền\" trong phần Xuất tệp PDF, nhập nội dung chữ chìm và chọn màu, rồi tạo PDF."}}]}, {"@context": "https://schema.org", "@type": "HowTo", "name": "Cách tạo và chuyển đổi tệp PDF với WikyFile", "step": [{"@type": "HowToStep", "position": 1, "name": "Chọn tính năng", "text": "Chọn tab Ảnh sang PDF, PDF sang Word hoặc Chỉnh sửa PDF."}, {"@type": "HowToStep", "position": 2, "name": "Tải dữ liệu lên", "text": "Kéo thả hoặc chọn tệp từ thiết bị của bạn."}, {"@type": "HowToStep", "position": 3, "name": "Chỉnh sửa và kiểm tra", "text": "Cắt, lọc ảnh, sắp xếp trang hoặc sửa nội dung nhận dạng."}, {"@type": "HowToStep", "position": 4, "name": "Tải kết quả về máy", "text": "Đặt tên tệp rồi tải về PDF hoặc Word (.docx)."}]}]</script>
 </head>
 <body class="min-h-screen flex flex-col justify-between relative">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:bg-white focus:text-sapphire-600 focus:px-4 focus:py-2 focus:rounded-xl font-bold text-sm">Bỏ qua để tới nội dung chính</a>
+    <noscript><div style="padding:16px;text-align:center;background:#fef3c7;color:#92400e;font:600 14px sans-serif">WikyFile cần bật JavaScript để xử lý ảnh và PDF ngay trên trình duyệt của bạn.</div></noscript>
 
     <!-- BACKGROUND ANIMATED ORBS -->
     <div class="floating-orb orb-1"></div>
@@ -392,6 +420,14 @@
                 </div>
             </a>
 
+            <nav aria-label="Điều hướng chính" class="hidden md:flex items-center space-x-6 text-xs font-bold text-slate-600 dark:text-blue-200">
+                <a href="#cong-cu" class="hover:text-sapphire-600 dark:hover:text-blue-400 transition">Công cụ</a>
+                <a href="#cach-dung" class="hover:text-sapphire-600 dark:hover:text-blue-400 transition">Cách dùng</a>
+                <a href="#gioi-han" class="hover:text-sapphire-600 dark:hover:text-blue-400 transition">Giới hạn</a>
+                <a href="#bao-mat" class="hover:text-sapphire-600 dark:hover:text-blue-400 transition">Bảo mật</a>
+                <a href="#hoi-dap" class="hover:text-sapphire-600 dark:hover:text-blue-400 transition">Hỏi đáp</a>
+            </nav>
+
             <!-- Theme Switcher & Main CTA -->
             <div class="flex items-center space-x-1.5 sm:space-x-3">
                 <button onclick="toggleDarkMode()" class="p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl glass-input hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center justify-center text-slate-700 dark:text-slate-200" title="Chuyển chế độ Sáng/Tối">
@@ -407,6 +443,8 @@
         </div>
     </header>
 
+    <main id="main" class="flex-1 w-full">
+
     <!-- HERO MODERN SECTION -->
     <section class="relative pt-6 pb-8 lg:pt-12 lg:pb-14 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full z-10">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -418,13 +456,13 @@
                     <span>Bảo mật Cục bộ</span>
                 </div>
 
-                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
-                    Chỉnh Sửa Tài Liệu<br>
-                    <span class="bg-gradient-to-r from-sapphire-600 via-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-200 bg-clip-text text-transparent">PDF</span>
+                <h1 class="text-3xl sm:text-5xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                    Ảnh sang PDF, PDF sang Word<br>
+                    <span class="bg-gradient-to-r from-sapphire-600 via-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-200 bg-clip-text text-transparent">&amp; chỉnh sửa PDF online</span>
                 </h1>
 
                 <p class="text-xs sm:text-base text-slate-600 dark:text-blue-200/70 font-medium leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                    Tải ảnh lên hoặc ghép tệp PDF. Công cụ làm nét tài liệu, căn chỉnh vùng cắt và sắp xếp trang linh hoạt trong một tab duy nhất.
+                    Chuyển ảnh sang PDF, chuyển PDF sang Word (có OCR tiếng Việt), ghép và xóa trang PDF. Mọi thao tác chạy ngay trên trình duyệt của bạn, dùng được trên máy tính, Android và iPhone.
                 </p>
 
                 <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
@@ -432,6 +470,9 @@
                         <span>Bắt Đầu</span>
                         <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </a>
+                    <button type="button" onclick="openTool('word')" class="glass-input text-xs sm:text-sm font-bold px-6 py-3 rounded-2xl flex items-center space-x-2 text-sapphire-600 dark:text-blue-300">
+                        <i data-lucide="file-type-2" class="w-4 h-4"></i><span>PDF sang Word</span>
+                    </button>
                 </div>
 
                 <!-- WIDGET AF-HOME-STATS -->
@@ -496,10 +537,14 @@
             <div class="glass-panel rounded-2xl sm:rounded-3xl p-3 sm:p-8 border border-white/80 dark:border-blue-500/30 shadow-2xl relative space-y-6">
                 
                 <!-- TAB NAVIGATION BAR AT TOP OF UPLOAD ZONE -->
-                <div class="flex items-center justify-center p-1.5 bg-slate-200/60 dark:bg-slate-900/60 rounded-2xl max-w-md mx-auto border border-slate-300/50 dark:border-blue-900/40">
+                <div class="flex items-center justify-center p-1.5 bg-slate-200/60 dark:bg-slate-900/60 rounded-2xl max-w-xl overflow-x-auto mx-auto border border-slate-300/50 dark:border-blue-900/40">
                     <button type="button" onclick="switchStudioTab('image')" id="tabBtnImage" class="tab-btn active flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center space-x-2 text-slate-600 dark:text-slate-300">
                         <i data-lucide="image" class="w-4 h-4"></i>
                         <span>Ảnh sang PDF</span>
+                    </button>
+                    <button type="button" onclick="switchStudioTab('word')" id="tabBtnWord" class="tab-btn flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center space-x-2 text-slate-600 dark:text-blue-300">
+                        <i data-lucide="file-type-2" class="w-4 h-4"></i>
+                        <span>PDF sang Word</span>
                     </button>
                     <button type="button" onclick="switchStudioTab('pdf')" id="tabBtnPdf" class="tab-btn flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center space-x-2 text-slate-600 dark:text-slate-300">
                         <i data-lucide="file-text" class="w-4 h-4"></i>
@@ -674,7 +719,116 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: PDF EDIT & MERGE AREA (SYNCHRONIZED UI WITH TAB 1) -->
+                <!-- TAB 2: PDF SANG WORD (giao diện đồng bộ với Tab 1 và Tab 3) -->
+                <div id="wordTabContent" class="hidden space-y-6">
+                    <div id="wordDropArea" class="border-2 border-dashed border-sapphire-500/40 hover:border-sapphire-600 rounded-xl sm:rounded-2xl p-5 sm:p-12 text-center transition-all duration-300 cursor-pointer bg-sapphire-50/40 dark:bg-blue-950/20 group">
+                        <input type="file" id="wordFileInput" accept="application/pdf,.pdf" multiple class="hidden">
+                        <div class="w-12 h-12 sm:w-20 sm:h-20 mx-auto rounded-2xl sm:rounded-3xl bg-gradient-to-tr from-sapphire-600 to-blue-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/20 mb-3 sm:mb-4">
+                            <i data-lucide="file-type-2" class="w-6 h-6 sm:w-10 sm:h-10 text-white group-hover:translate-y-[-2px] transition"></i>
+                        </div>
+                        <h3 class="text-sm sm:text-xl font-bold text-slate-800 dark:text-white">Kéo thả PDF cần chuyển sang Word hoặc Click để chọn</h3>
+                        <p class="text-[11px] sm:text-xs text-slate-500 dark:text-blue-400/80 mt-1 font-semibold">Hỗ trợ PDF văn bản, PDF scan và PDF hỗn hợp (OCR tiếng Việt, tiếng Anh)</p>
+                        <div class="mt-4 inline-flex items-center space-x-2 sapphire-gradient-btn text-white font-bold text-xs px-4 py-2 sm:px-6 sm:py-3 rounded-xl shadow-lg transition transform group-hover:scale-105">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            <span>CHỌN FILE PDF TỪ MÁY</span>
+                        </div>
+                    </div>
+
+                    <div id="wordWorkspace" class="hidden space-y-6">
+                        <div class="workspace-toolbar p-3 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-blue-800/40 space-y-3">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div>
+                                    <h4 class="font-extrabold text-sm text-slate-900 dark:text-white">File PDF Cần Chuyển Sang Word</h4>
+                                    <p id="wordSummary" class="text-[11px] text-slate-500 dark:text-blue-300">Chạm vào một tệp để chọn tệp cần chuyển</p>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <button type="button" id="wordAddBtn" class="glass-input px-3 py-1.5 rounded-xl text-xs font-bold text-sapphire-600 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/40 flex items-center gap-1"><i data-lucide="plus" class="w-3.5 h-3.5"></i> Thêm PDF</button>
+                                    <button type="button" id="wordClearBtn" class="glass-input px-3 py-1.5 rounded-xl text-xs font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center gap-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Xóa Tất Cả</button>
+                                </div>
+                            </div>
+                            <div id="wordFileList" class="space-y-2"></div>
+                        </div>
+
+                        <div id="wordCard" class="glass-card p-4 sm:p-6 rounded-2xl space-y-5 border border-slate-200 dark:border-blue-500/20">
+                            <div class="flex items-center space-x-2 text-slate-900 dark:text-white font-bold text-sm">
+                                <i data-lucide="file-type-2" class="w-4 h-4 text-sapphire-500"></i>
+                                <span>Cấu hình chuyển đổi Word</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+                                <div>
+                                    <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Chế độ Word</label>
+                                    <select id="wordMode" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                        <option value="layout">Giữ bố cục gốc</option>
+                                        <option value="edit" selected>Word dễ chỉnh sửa</option>
+                                        <option value="plain">Văn bản thuần</option>
+                                    </select>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Công cụ OCR cho trang scan</label>
+                                    <select id="wordOcr" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                        <option value="tess" selected>Tesseract.js — chạy cục bộ, không gửi tài liệu</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Ngôn ngữ OCR</label>
+                                    <select id="wordLang" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                        <option value="vie+eng" selected>Tiếng Việt + Tiếng Anh</option>
+                                        <option value="vie">Tiếng Việt</option>
+                                        <option value="eng">Tiếng Anh</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <p id="wordOcrNote" class="text-[11px] leading-relaxed text-slate-500 dark:text-blue-300/80">OCR cục bộ nhận dạng tốt chữ in, không đáng tin với chữ viết tay; bảng và công thức trên trang scan cần chỉnh tay. Lần OCR đầu cần Internet để tải dữ liệu ngôn ngữ (không gửi tài liệu của bạn).</p>
+
+                            <div class="flex gap-2">
+                                <button type="button" id="wordConvertBtn" class="flex-1 py-3.5 sm:py-4 rounded-2xl sapphire-gradient-btn text-white font-extrabold text-xs sm:text-sm tracking-wide uppercase flex items-center justify-center space-x-2 disabled:opacity-60">
+                                    <i data-lucide="wand-2" class="w-5 h-5"></i><span>PHÂN TÍCH & CHUYỂN SANG WORD</span>
+                                </button>
+                                <button type="button" id="wordCancelBtn" class="hidden px-5 rounded-2xl glass-input font-bold text-xs text-rose-500">Hủy</button>
+                            </div>
+
+                            <div id="wordProg" class="hidden space-y-1">
+                                <div class="flex justify-between text-[11px] font-bold text-slate-600 dark:text-blue-200"><span id="wordProgText">Đang xử lý...</span><span id="wordProgVal" class="font-mono">0%</span></div>
+                                <div class="h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden"><div id="wordProgBar" class="h-full w-0 bg-gradient-to-r from-sapphire-600 to-indigo-500 transition-all duration-300"></div></div>
+                            </div>
+                            <div id="wordStatus" role="status" class="hidden text-xs font-semibold rounded-xl p-3"></div>
+
+                            <div id="wordResult" class="hidden space-y-4 pt-3 border-t border-slate-200 dark:border-blue-900/40">
+                                <div id="wordStats" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center"></div>
+                                <ul id="wordWarn" class="list-disc pl-5 text-[11px] text-amber-700 dark:text-amber-300 space-y-0.5"></ul>
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5 text-xs">
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Markdown trung gian (sửa trực tiếp, không bị tự ghi đè)</label>
+                                        <textarea id="wordMd" spellcheck="false" class="w-full h-72 glass-input p-3 rounded-xl font-mono text-xs resize-y"></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Xem trước (gần đúng, không phải bản Word thật)</label>
+                                        <div id="wordPrev" class="h-72 overflow-auto rounded-xl bg-white text-slate-900 p-4 text-sm border border-slate-300"></div>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+                                    <div class="md:col-span-2">
+                                        <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Tên File Word Xuất Ra</label>
+                                        <div class="relative">
+                                            <input type="text" id="wordOutName" placeholder="WikyFile_Converted" class="w-full glass-input p-2.5 sm:p-3 rounded-xl pr-16 font-medium">
+                                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sapphire-600 dark:text-blue-400 font-bold">.docx</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-end gap-2">
+                                        <button type="button" id="wordBreakBtn" class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl font-bold text-sapphire-600 dark:text-blue-300">Chèn ngắt trang</button>
+                                        <button type="button" id="wordMdBtn" class="flex-1 glass-input p-2.5 sm:p-3 rounded-xl font-bold text-sapphire-600 dark:text-blue-300">Tải .md</button>
+                                    </div>
+                                </div>
+                                <button type="button" id="wordExportBtn" class="w-full py-3.5 sm:py-4 rounded-2xl sapphire-gradient-btn text-white font-extrabold text-xs sm:text-sm tracking-wide uppercase flex items-center justify-center space-x-2 disabled:opacity-60">
+                                    <i data-lucide="file-down" class="w-5 h-5"></i><span>TẠO & TẢI FILE WORD (.docx)</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: PDF EDIT & MERGE AREA (SYNCHRONIZED UI WITH TAB 1) -->
                 <div id="pdfTabContent" class="hidden space-y-6">
                     <div id="pdfDropArea" class="border-2 border-dashed border-sapphire-500/40 hover:border-sapphire-600 rounded-xl sm:rounded-2xl p-5 sm:p-12 text-center transition-all duration-300 cursor-pointer bg-sapphire-50/40 dark:bg-blue-950/20 hover:bg-sapphire-100/60 dark:hover:bg-blue-900/30 group relative overflow-hidden">
                         <input type="file" id="pdfFilesInput" accept="application/pdf,.pdf" multiple class="hidden">
@@ -807,6 +961,7 @@
                         </div>
 
                         
+                        <div id="pdfManagerStatus" role="status" class="hidden"></div>
                         <div id="pdfManagerProgress" class="hidden space-y-1">
                             <div class="flex justify-between text-[11px] font-bold text-slate-600 dark:text-blue-200"><span id="pdfManagerProgressText">Đang xử lý...</span><span id="pdfManagerProgressValue">0%</span></div>
                             <div class="h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden"><div id="pdfManagerProgressBar" class="h-full w-0 bg-gradient-to-r from-sapphire-600 to-indigo-500 transition-all"></div></div>
@@ -818,11 +973,40 @@
         </div>
     </section>
 
+    <div id="cong-cu" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-title reveal in" style="--d: 230ms;">
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-2">
+            <i data-lucide="layout-grid" class="w-5 h-5 text-sapphire-500"></i>
+            <span>Chọn nhanh công cụ bạn cần</span>
+        </h2>
+    </div>
+    <section aria-label="Danh sách công cụ" class="pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full z-10">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal in" style="--d: 0ms;">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center"><i data-lucide="image" class="w-5 h-5 sm:w-6 sm:h-6"></i></div>
+                <h3 class="font-bold text-base text-slate-900 dark:text-white">Ảnh sang PDF</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Gộp nhiều ảnh chụp hoặc ảnh scan thành một tệp PDF. Cắt vùng, xoay, làm nét chữ và kéo thả đổi thứ tự trang.</p>
+                <button type="button" onclick="openTool('image')" class="mt-1 sapphire-gradient-btn text-white text-xs font-bold px-4 py-2.5 rounded-xl inline-flex items-center space-x-1.5"><span>Mở công cụ</span><i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></button>
+            </div>
+            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal in" style="--d: 0ms;">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center"><i data-lucide="file-type-2" class="w-5 h-5 sm:w-6 sm:h-6"></i></div>
+                <h3 class="font-bold text-base text-slate-900 dark:text-white">PDF sang Word</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Chuyển PDF văn bản hoặc PDF scan thành tệp .docx chỉnh sửa được, có OCR tiếng Việt và xem trước trước khi tải về.</p>
+                <button type="button" onclick="openTool('word')" class="mt-1 sapphire-gradient-btn text-white text-xs font-bold px-4 py-2.5 rounded-xl inline-flex items-center space-x-1.5"><span>Mở công cụ</span><i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></button>
+            </div>
+            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal in" style="--d: 0ms;">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center"><i data-lucide="combine" class="w-5 h-5 sm:w-6 sm:h-6"></i></div>
+                <h3 class="font-bold text-base text-slate-900 dark:text-white">Chỉnh sửa PDF</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Ghép nhiều PDF thành một, xóa trang thừa, sắp xếp lại trang và xuất tệp mới chỉ với vài thao tác.</p>
+                <button type="button" onclick="openTool('pdf')" class="mt-1 sapphire-gradient-btn text-white text-xs font-bold px-4 py-2.5 rounded-xl inline-flex items-center space-x-1.5"><span>Mở công cụ</span><i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></button>
+            </div>
+        </div>
+    </section>
+
     <!-- WIDGET HƯỚNG DẪN CÁC BƯỚC -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-title reveal in" style="--d: 240ms;">
+    <div id="cach-dung" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-title reveal in" style="--d: 240ms;">
         <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-2">
             <i data-lucide="map-pin" class="w-5 h-5 text-sapphire-500"></i>
-            <span>4 bước tạo File PDF</span>
+            <span>4 bước để xử lý tệp với WikyFile</span>
         </h2>
     </div>
 
@@ -834,8 +1018,8 @@
                 <div class="w-10 h-10 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center font-bold">
                     <i data-lucide="upload" class="w-5 h-5"></i>
                 </div>
-                <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white">1. Chọn tính năng chỉnh sửa PDF</h3>
-                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Chọn chuyển đổi giữa các tab để mở tab phù hợp với nhu cầu của bạn.</p>
+                <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white">1. Chọn tính năng</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Chọn tab Ảnh sang PDF, PDF sang Word hoặc Chỉnh sửa PDF.</p>
             </div>
 
             <div class="glass-card p-5 rounded-3xl space-y-3 relative overflow-hidden reveal in" style="--d: 300ms;">
@@ -844,7 +1028,7 @@
                     <i data-lucide="wand-2" class="w-5 h-5"></i>
                 </div>
                 <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white">2. Tải dữ liệu lên</h3>
-                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Kéo thả tệp hoặc chọn tải lên tệp từ thiết bị.</p>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Kéo thả hoặc chọn tệp từ thiết bị của bạn.</p>
             </div>
 
             <div class="glass-card p-5 rounded-3xl space-y-3 relative overflow-hidden reveal in" style="--d: 340ms;">
@@ -852,8 +1036,8 @@
                 <div class="w-10 h-10 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center font-bold">
                     <i data-lucide="trash-2" class="w-5 h-5"></i>
                 </div>
-                <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white">3. Chỉnh sửa File</h3>
-                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Chỉnh sửa các trang PDF qua các nút tiện ích.</p>
+                <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white">3. Chỉnh sửa và kiểm tra</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Cắt, lọc ảnh, sắp xếp trang hoặc sửa nội dung nhận dạng.</p>
             </div>
 
             <div class="glass-card p-5 rounded-3xl space-y-3 relative overflow-hidden reveal in" style="--d: 380ms;">
@@ -861,15 +1045,15 @@
                 <div class="w-10 h-10 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center font-bold">
                     <i data-lucide="download-cloud" class="w-5 h-5"></i>
                 </div>
-                <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white">4. Xuất File PDF</h3>
-                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Nhập tên File PDF hoàn chỉnh và nhấp chọn tải File về máy.</p>
+                <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white">4. Tải kết quả về máy</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Đặt tên tệp rồi tải về PDF hoặc Word (.docx).</p>
             </div>
 
         </div>
     </section>
 
     <!-- SECTION TITLE & FEATURES GRID -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-title reveal in" style="--d: 400ms;">
+    <div id="tinh-nang" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-title reveal in" style="--d: 400ms;">
         <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-2">
             <i data-lucide="sparkles" class="w-5 h-5 text-sapphire-500"></i>
             <span>Mọi thứ bạn cần để xử lý File PDF</span>
@@ -901,59 +1085,134 @@
                 <h3 class="font-bold text-base text-slate-900 dark:text-white">Áp Dụng Hàng Loạt Nhanh</h3>
                 <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Chỉ cần chọn bộ lọc tối ưu 1 lần và bấm "Áp dụng cho tất cả" để xử lý hàng chục trang tài liệu trong tích tắc.</p>
             </div>
+            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal in" style="--d: 540ms;">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center"><i data-lucide="file-type-2" class="w-5 h-5 sm:w-6 sm:h-6"></i></div>
+                <h3 class="font-bold text-base text-slate-900 dark:text-white">PDF Sang Word Có OCR</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Tự nhận diện PDF văn bản, PDF scan hay hỗn hợp; trang scan được OCR tiếng Việt và tiếng Anh, xuất Word chỉnh sửa được.</p>
+            </div>
+            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal in" style="--d: 580ms;">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center"><i data-lucide="wifi-off" class="w-5 h-5 sm:w-6 sm:h-6"></i></div>
+                <h3 class="font-bold text-base text-slate-900 dark:text-white">Thân Thiện Với Mạng Yếu</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Thư viện chỉ tải khi cần, có nút thử lại khi lỗi mạng và lưu cache khi triển khai HTTPS, giúp chạy ổn định trên điện thoại.</p>
+            </div>
+            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal in" style="--d: 620ms;">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center"><i data-lucide="shield-check" class="w-5 h-5 sm:w-6 sm:h-6"></i></div>
+                <h3 class="font-bold text-base text-slate-900 dark:text-white">Xử Lý Cục Bộ</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Ảnh và PDF được xử lý ngay trên thiết bị của bạn, không tự động tải tài liệu lên máy chủ.</p>
+            </div>
         </div>
     </section>
 
-    <!-- WIDGET CÂU HỎI THƯỜNG GẶP (FAQ ACCORDION WIDGET) -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-title reveal in" style="--d: 520ms;">
+    <div id="gioi-han" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-title reveal in" style="--d: 560ms;">
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-2">
+            <i data-lucide="ruler" class="w-5 h-5 text-sapphire-500"></i>
+            <span>Định dạng, giới hạn và độ chính xác</span>
+        </h2>
+    </div>
+    <section aria-label="Định dạng và giới hạn" class="pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full z-10 space-y-4">
+        <div class="glass-card rounded-3xl p-4 sm:p-6 reveal in overflow-x-auto" style="--d: 580ms;">
+            <table class="w-full text-xs text-left text-slate-600 dark:text-blue-200/80 min-w-[560px]">
+                <caption class="sr-only">Định dạng đầu vào, giới hạn và đầu ra của từng công cụ</caption>
+                <thead><tr class="text-slate-900 dark:text-white"><th scope="col" class="pb-2 pr-3">Công cụ</th><th scope="col" class="pb-2 pr-3">Đầu vào</th><th scope="col" class="pb-2 pr-3">Giới hạn</th><th scope="col" class="pb-2">Đầu ra</th></tr></thead>
+                <tbody><tr class="border-t border-slate-200 dark:border-blue-900/40"><th scope="row" class="py-2.5 pr-3 font-bold text-slate-900 dark:text-white whitespace-nowrap">Ảnh sang PDF</th><td class="py-2.5 pr-3">JPG, PNG, WEBP, GIF, BMP</td><td class="py-2.5 pr-3">Tối đa 80 ảnh, mỗi ảnh ≤ 30 MB</td><td class="py-2.5">PDF</td></tr><tr class="border-t border-slate-200 dark:border-blue-900/40"><th scope="row" class="py-2.5 pr-3 font-bold text-slate-900 dark:text-white whitespace-nowrap">PDF sang Word</th><td class="py-2.5 pr-3">PDF văn bản, scan, hỗn hợp</td><td class="py-2.5 pr-3">Tối đa 10 tệp, mỗi tệp ≤ 150 MB</td><td class="py-2.5">Word (.docx), Markdown (.md)</td></tr><tr class="border-t border-slate-200 dark:border-blue-900/40"><th scope="row" class="py-2.5 pr-3 font-bold text-slate-900 dark:text-white whitespace-nowrap">Chỉnh sửa PDF</th><td class="py-2.5 pr-3">PDF</td><td class="py-2.5 pr-3">Tối đa 30 tệp, mỗi tệp ≤ 150 MB</td><td class="py-2.5">PDF</td></tr></tbody>
+            </table>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass-card rounded-3xl p-5 reveal in" style="--d: 600ms;"><h3 class="font-bold text-sm text-slate-900 dark:text-white mb-3">Chuyển PDF sang Word làm tốt</h3><ul class="space-y-2 text-xs text-slate-600 dark:text-blue-200/80"><li class="flex items-start space-x-2"><i data-lucide="check-circle-2" class="w-4 h-4 shrink-0 mt-0.5 text-emerald-500"></i><span>Văn bản có thể chọn/sao chép được trích xuất trực tiếp</span></li><li class="flex items-start space-x-2"><i data-lucide="check-circle-2" class="w-4 h-4 shrink-0 mt-0.5 text-emerald-500"></i><span>OCR chữ in tiếng Việt và tiếng Anh</span></li><li class="flex items-start space-x-2"><i data-lucide="check-circle-2" class="w-4 h-4 shrink-0 mt-0.5 text-emerald-500"></i><span>Tiêu đề, đoạn, danh sách, căn lề, ngắt trang</span></li><li class="flex items-start space-x-2"><i data-lucide="check-circle-2" class="w-4 h-4 shrink-0 mt-0.5 text-emerald-500"></i><span>Bảng có cột thẳng hàng</span></li><li class="flex items-start space-x-2"><i data-lucide="check-circle-2" class="w-4 h-4 shrink-0 mt-0.5 text-emerald-500"></i><span>Xem trước và sửa Markdown trước khi xuất</span></li></ul></div>
+            <div class="glass-card rounded-3xl p-5 reveal in" style="--d: 620ms;"><h3 class="font-bold text-sm text-slate-900 dark:text-white mb-3">Cần kiểm tra thủ công</h3><ul class="space-y-2 text-xs text-slate-600 dark:text-blue-200/80"><li class="flex items-start space-x-2"><i data-lucide="alert-triangle" class="w-4 h-4 shrink-0 mt-0.5 text-amber-500"></i><span>Chữ viết tay: OCR cục bộ kém tin cậy</span></li><li class="flex items-start space-x-2"><i data-lucide="alert-triangle" class="w-4 h-4 shrink-0 mt-0.5 text-amber-500"></i><span>Ô gộp, ảnh nhúng, công thức, header/footer chưa dựng lại</span></li><li class="flex items-start space-x-2"><i data-lucide="alert-triangle" class="w-4 h-4 shrink-0 mt-0.5 text-amber-500"></i><span>Bảng và nhiều cột trên trang scan cần chỉnh tay</span></li><li class="flex items-start space-x-2"><i data-lucide="alert-triangle" class="w-4 h-4 shrink-0 mt-0.5 text-amber-500"></i><span>PDF có mật khẩu chưa được hỗ trợ</span></li><li class="flex items-start space-x-2"><i data-lucide="alert-triangle" class="w-4 h-4 shrink-0 mt-0.5 text-amber-500"></i><span>Tệp Word có thể khác PDF gốc về bố cục</span></li></ul></div>
+        </div>
+    </section>
+
+    <div id="bao-mat" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-title reveal in" style="--d: 640ms;">
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-2">
+            <i data-lucide="shield-check" class="w-5 h-5 text-sapphire-500"></i>
+            <span>Quyền riêng tư và dữ liệu của bạn</span>
+        </h2>
+    </div>
+    <section aria-label="Quyền riêng tư" class="pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full z-10">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal in" style="--d: 660ms;">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center"><i data-lucide="cpu" class="w-5 h-5 sm:w-6 sm:h-6"></i></div>
+                <h3 class="font-bold text-base text-slate-900 dark:text-white">Xử lý trên thiết bị</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Cắt, lọc ảnh, ghép PDF, trích xuất văn bản và OCR cục bộ đều chạy trong trình duyệt của bạn.</p>
+            </div>
+            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal in" style="--d: 680ms;">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center"><i data-lucide="send" class="w-5 h-5 sm:w-6 sm:h-6"></i></div>
+                <h3 class="font-bold text-base text-slate-900 dark:text-white">Gửi dữ liệu khi nào?</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Chỉ khi trang có cấu hình dịch vụ OCR đám mây và bạn chọn dùng nó cho trang scan. Trước khi gửi, WikyFile luôn hỏi xác nhận.</p>
+            </div>
+            <div class="glass-card p-5 sm:p-6 rounded-3xl space-y-3 reveal in" style="--d: 700ms;">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/60 border border-blue-200 dark:border-blue-500/30 text-sapphire-600 dark:text-blue-400 flex items-center justify-center"><i data-lucide="database" class="w-5 h-5 sm:w-6 sm:h-6"></i></div>
+                <h3 class="font-bold text-base text-slate-900 dark:text-white">Những gì được lưu</h3>
+                <p class="text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed">Không lưu tài liệu. Chỉ có bộ đếm số trang đã tạo và cài đặt giao diện sáng/tối trên trình duyệt của bạn.</p>
+            </div>
+        </div>
+    </section>
+
+    <div id="hoi-dap" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-title reveal in" style="--d: 520ms;">
         <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center space-x-2">
             <i data-lucide="help-circle" class="w-5 h-5 text-sapphire-500"></i>
             <span>Câu hỏi thường gặp</span>
         </h2>
     </div>
-
-    <section class="pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full z-10">
+    <section aria-label="Câu hỏi thường gặp" class="pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full z-10">
         <div class="space-y-3">
-            
             <details class="glass-card rounded-2xl p-4 cursor-pointer group reveal in" style="--d: 540ms;">
                 <summary class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center justify-between list-none">
-                    <span class="flex items-center space-x-2">
-                        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-500"></i>
-                        <span>Tệp tin của tôi có bị tải lên server bên ngoài không?</span>
-                    </span>
+                    <span class="flex items-center space-x-2"><i data-lucide="shield-check" class="w-4 h-4 text-emerald-500"></i><span>Tệp tin của tôi có bị tải lên máy chủ bên ngoài không?</span></span>
                     <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
                 </summary>
-                <p class="mt-2.5 text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed pl-6 border-l-2 border-sapphire-500">
-                    Không. WikyFile xử lý 100% hình ảnh và tệp PDF ngay trên trình duyệt di động hoặc máy tính của bạn thông qua Canvas HTML5 & Web Workers, bảo đảm bảo mật tuyệt đối cho mọi tài liệu cá nhân.
-                </p>
+                <p class="mt-2.5 text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed pl-6 border-l-2 border-sapphire-500">Mặc định là không. Ảnh và PDF được xử lý ngay trên trình duyệt của bạn. Ngoại lệ duy nhất: nếu quản trị trang cấu hình dịch vụ OCR đám mây và bạn chọn dùng nó cho trang scan, ảnh các trang scan chỉ được gửi đi sau khi bạn xác nhận. Trang chỉ lưu một bộ đếm số trang đã tạo, không lưu tài liệu.</p>
             </details>
-
             <details class="glass-card rounded-2xl p-4 cursor-pointer group reveal in" style="--d: 570ms;">
                 <summary class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center justify-between list-none">
-                    <span class="flex items-center space-x-2">
-                        <i data-lucide="layers" class="w-4 h-4 text-sapphire-500"></i>
-                        <span>Tôi có thể ghép bao nhiêu file PDF cùng lúc?</span>
-                    </span>
+                    <span class="flex items-center space-x-2"><i data-lucide="file-type-2" class="w-4 h-4 text-sapphire-500"></i><span>Chuyển PDF sang Word hoạt động như thế nào?</span></span>
                     <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
                 </summary>
-                <p class="mt-2.5 text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed pl-6 border-l-2 border-sapphire-500">
-                    Hệ thống hỗ trợ nạp tới 30 tệp PDF cùng một lúc. Bạn có thể kéo thả thay đổi vị trí trang, bật/tắt bản xem trước để tăng tốc độ và bấm nút xuất duy nhất.
-                </p>
+                <p class="mt-2.5 text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed pl-6 border-l-2 border-sapphire-500">Trang có văn bản được trích xuất trực tiếp. Trang scan được nhận dạng bằng OCR (tiếng Việt và tiếng Anh). Kết quả là bản Markdown trung gian bạn có thể sửa, xem trước, rồi xuất thành tệp .docx có tiêu đề, danh sách, bảng cơ bản và số trang.</p>
             </details>
-
             <details class="glass-card rounded-2xl p-4 cursor-pointer group reveal in" style="--d: 600ms;">
                 <summary class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center justify-between list-none">
-                    <span class="flex items-center space-x-2">
-                        <i data-lucide="stamp" class="w-4 h-4 text-indigo-500"></i>
-                        <span>Cách chèn mộc bản quyền (Watermark) vào file PDF xuất ra?</span>
-                    </span>
+                    <span class="flex items-center space-x-2"><i data-lucide="scan-text" class="w-4 h-4 text-amber-500"></i><span>PDF scan và chữ viết tay có chuyển được không?</span></span>
                     <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
                 </summary>
-                <p class="mt-2.5 text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed pl-6 border-l-2 border-sapphire-500">
-                    Bạn chỉ cần nhấp nút <strong>"Tạo bản quyền"</strong> góc phải phần Tên Tệp & Chất Lượng Nén để bật khung thiết lập, điền nội dung chữ chìm mong muốn và xuất file.
-                </p>
+                <p class="mt-2.5 text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed pl-6 border-l-2 border-sapphire-500">PDF scan được OCR tốt với chữ in rõ nét. Chữ viết tay có độ chính xác thấp với OCR chạy cục bộ; các trang có độ tin cậy thấp được đánh dấu cần kiểm tra. Bảng, công thức và hình ảnh trên trang scan cần chỉnh tay trong bản Markdown.</p>
             </details>
-
+            <details class="glass-card rounded-2xl p-4 cursor-pointer group reveal in" style="--d: 630ms;">
+                <summary class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center justify-between list-none">
+                    <span class="flex items-center space-x-2"><i data-lucide="file-check-2" class="w-4 h-4 text-indigo-500"></i><span>Tệp Word xuất ra có giống hệt PDF gốc không?</span></span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
+                </summary>
+                <p class="mt-2.5 text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed pl-6 border-l-2 border-sapphire-500">Không đảm bảo giống hoàn toàn. Chế độ Giữ bố cục áp dụng cỡ chữ, căn lề, kích thước trang và ngắt trang. Ô gộp, ảnh nhúng, header/footer và công thức chưa được dựng lại tự động, vì vậy hãy xem trước và chỉnh sửa trước khi tải về.</p>
+            </details>
+            <details class="glass-card rounded-2xl p-4 cursor-pointer group reveal in" style="--d: 660ms;">
+                <summary class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center justify-between list-none">
+                    <span class="flex items-center space-x-2"><i data-lucide="layers" class="w-4 h-4 text-sapphire-500"></i><span>Tôi có thể xử lý bao nhiêu tệp cùng lúc?</span></span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
+                </summary>
+                <p class="mt-2.5 text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed pl-6 border-l-2 border-sapphire-500">Ảnh sang PDF: tối đa 80 ảnh, mỗi ảnh không quá 30 MB. Chỉnh sửa PDF: tối đa 30 tệp, mỗi tệp không quá 150 MB. PDF sang Word: tối đa 10 tệp, mỗi tệp không quá 150 MB. Bạn có thể bật hoặc tắt xem trước trang để tăng tốc trên máy yếu.</p>
+            </details>
+            <details class="glass-card rounded-2xl p-4 cursor-pointer group reveal in" style="--d: 690ms;">
+                <summary class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center justify-between list-none">
+                    <span class="flex items-center space-x-2"><i data-lucide="wifi-off" class="w-4 h-4 text-rose-500"></i><span>WikyFile có dùng được khi mạng yếu hoặc mất mạng không?</span></span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
+                </summary>
+                <p class="mt-2.5 text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed pl-6 border-l-2 border-sapphire-500">Việc xử lý ảnh và PDF diễn ra trên thiết bị, nhưng các thư viện được tải từ CDN ở lần dùng đầu tiên và OCR cần Internet để tải dữ liệu ngôn ngữ lần đầu. Khi trang được triển khai trên HTTPS cùng tệp sw.js, các thư viện đã tải sẽ được lưu lại để dùng lại khi mất mạng.</p>
+            </details>
+            <details class="glass-card rounded-2xl p-4 cursor-pointer group reveal in" style="--d: 720ms;">
+                <summary class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center justify-between list-none">
+                    <span class="flex items-center space-x-2"><i data-lucide="lock" class="w-4 h-4 text-amber-500"></i><span>Tệp PDF có mật khẩu thì sao?</span></span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
+                </summary>
+                <p class="mt-2.5 text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed pl-6 border-l-2 border-sapphire-500">WikyFile không mở được PDF được bảo vệ bằng mật khẩu. Hãy dùng bản không khóa rồi tải lại.</p>
+            </details>
+            <details class="glass-card rounded-2xl p-4 cursor-pointer group reveal in" style="--d: 750ms;">
+                <summary class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center justify-between list-none">
+                    <span class="flex items-center space-x-2"><i data-lucide="stamp" class="w-4 h-4 text-indigo-500"></i><span>Cách chèn dấu bản quyền (watermark) vào PDF xuất ra?</span></span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
+                </summary>
+                <p class="mt-2.5 text-xs text-slate-600 dark:text-blue-200/70 leading-relaxed pl-6 border-l-2 border-sapphire-500">Ở tab Ảnh sang PDF, bấm nút "Tạo bản quyền" trong phần Xuất tệp PDF, nhập nội dung chữ chìm và chọn màu, rồi tạo PDF.</p>
+            </details>
         </div>
     </section>
 
@@ -961,7 +1220,7 @@
     <div class="w-full px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-12">
         <div class="sapphire-gradient-btn w-full p-6 sm:p-10 rounded-3xl text-white text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6 shadow-2xl reveal in" style="--d: 630ms;">
             <div class="space-y-2 max-w-xl">
-                <h2 class="text-xl sm:text-3xl font-extrabold tracking-tight">Xuất Tệp PDF Chuẩn Sắc Nét Với WikyFile</h2>
+                <h2 class="text-xl sm:text-3xl font-extrabold tracking-tight">Ảnh sang PDF, PDF sang Word chuẩn sắc nét với WikyFile</h2>
                 <p class="text-xs sm:text-sm text-blue-100 opacity-90">Hoàn toàn miễn phí, xử lý bảo mật trên trình duyệt của bạn không tải ảnh lên máy chủ bên ngoài.</p>
             </div>
             <a href="#convert-section" class="glass-input bg-white text-sapphire-600 font-extrabold text-xs sm:text-sm px-6 py-3.5 rounded-2xl hover:bg-slate-100 transition shrink-0 uppercase tracking-wide">
@@ -970,21 +1229,23 @@
         </div>
     </div>
 
+    </main>
+
     <!-- FOOTER CHUYÊN NGHIỆP -->
     <footer class="mt-auto glass-header py-6 px-4 text-xs font-semibold text-slate-600 dark:text-blue-300/80 z-10">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center space-x-4 text-base">
-                <a href="#" class="hover:text-sapphire-600 transition"><i data-lucide="github" class="w-4 h-4"></i></a>
-                <a href="#" class="hover:text-sapphire-600 transition"><i data-lucide="globe" class="w-4 h-4"></i></a>
-                <a href="#" class="hover:text-sapphire-600 transition"><i data-lucide="file-text" class="w-4 h-4"></i></a>
-            </div>
-
+            <nav aria-label="Liên kết chân trang" class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+                <a href="#cong-cu" class="hover:text-sapphire-600 transition">Công cụ</a>
+                <a href="#cach-dung" class="hover:text-sapphire-600 transition">Cách dùng</a>
+                <a href="#gioi-han" class="hover:text-sapphire-600 transition">Giới hạn</a>
+                <a href="#hoi-dap" class="hover:text-sapphire-600 transition">Hỏi đáp</a>
+            </nav>
             <div class="flex flex-wrap items-center justify-center gap-3 text-slate-500 dark:text-blue-200/70 text-[11px]">
                 <span class="text-slate-900 dark:text-white font-bold">WikyFile</span>
                 <span>•</span>
-                <span>Web app công cụ cho File PDF</span>
+                <span>Ảnh sang PDF • PDF sang Word • Chỉnh sửa PDF</span>
                 <span>•</span>
-                <a href="#" class="hover:text-sapphire-600 transition">Bảo mật</a>
+                <a href="#bao-mat" class="hover:text-sapphire-600 transition">Bảo mật</a>
             </div>
 
             <div>
@@ -1058,6 +1319,8 @@
             </div>
         </div>
     </div>
+
+    <div id="netBadge" role="status" class="hidden fixed top-14 sm:top-24 right-3 z-50 text-[11px] font-bold px-3 py-1.5 rounded-full bg-amber-500 text-white shadow-lg">Đang offline • xử lý cục bộ vẫn dùng được, OCR/tải thư viện cần mạng</div>
 
     <!-- CHIBI BÓNG NƯỚC (TRUNG TÂM PHÁT THÔNG BÁO CHÍNH THỨC CỦA WEB APP) -->
     <div id="chibiBubbleContainer" class="fixed bottom-4 right-4 z-40 pointer-events-auto flex flex-col items-end group transition-all duration-300">
@@ -1223,24 +1486,20 @@
 
         /* SWITCH TAB FUNCTION */
         function switchStudioTab(tab) {
-            const tabBtnImg = document.getElementById('tabBtnImage');
-            const tabBtnPdf = document.getElementById('tabBtnPdf');
-            const imgContent = document.getElementById('imageTabContent');
-            const pdfContent = document.getElementById('pdfTabContent');
-
-            if (tab === 'image') {
-                tabBtnImg.classList.add('active');
-                tabBtnPdf.classList.remove('active');
-                imgContent.classList.remove('hidden');
-                pdfContent.classList.add('hidden');
-                speakChibi("Đã chuyển sang Tab Quét & Tải Ảnh Tài Liệu!");
-            } else {
-                tabBtnPdf.classList.add('active');
-                tabBtnImg.classList.remove('active');
-                pdfContent.classList.remove('hidden');
-                imgContent.classList.add('hidden');
-                speakChibi("Đã chuyển sang Tab Chỉnh Sửa & Ghép PDF!");
-            }
+            const map = { image: ['tabBtnImage', 'imageTabContent', 'Đã chuyển sang Tab Quét & Tải Ảnh Tài Liệu!'],
+                          word: ['tabBtnWord', 'wordTabContent', 'Đã chuyển sang Tab PDF sang Word! Tác vụ đang chạy vẫn tiếp tục.'],
+                          pdf: ['tabBtnPdf', 'pdfTabContent', 'Đã chuyển sang Tab Chỉnh Sửa & Ghép PDF!'] };
+            if (!map[tab]) return;
+            const slug = { image: 'anh-sang-pdf', word: 'pdf-sang-word', pdf: 'chinh-sua-pdf' }[tab];
+            const ttl = { image: 'Ảnh sang PDF', word: 'PDF sang Word', pdf: 'Chỉnh sửa & Ghép PDF' }[tab];
+            document.title = 'WikyFile – ' + ttl + ' Online';
+            try { history.replaceState(null, '', '#' + slug); } catch (_) {}
+            Object.entries(map).forEach(([k, [b, c]]) => {
+                document.getElementById(b)?.classList.toggle('active', k === tab);
+                document.getElementById(c)?.classList.toggle('hidden', k !== tab);
+            });
+            document.getElementById(map[tab][0])?.scrollIntoView({ inline: 'center', block: 'nearest' });
+            speakChibi(map[tab][2]);
             if (window.lucide?.createIcons) window.lucide.createIcons();
         }
 
@@ -1248,7 +1507,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('anhsangpdf-theme');
             if (savedTheme === 'dark' || (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
-            lucide.createIcons();
+            window.lucide?.createIcons();
             initUploadListeners();
             initSortable();
             buildFilterUI();
@@ -1258,13 +1517,24 @@
             startChibiAutoSpeech();
         });
 
+        function openTool(tab) {
+            switchStudioTab(tab);
+            document.getElementById('convert-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        function tabFromHash() {
+            const t = { '#anh-sang-pdf': 'image', '#pdf-sang-word': 'word', '#chinh-sua-pdf': 'pdf' }[location.hash];
+            if (t) switchStudioTab(t);
+        }
+        window.addEventListener('hashchange', tabFromHash);
+        window.addEventListener('DOMContentLoaded', () => setTimeout(tabFromHash, 0));
+
         function toggleDarkMode() {
             const isDark = document.documentElement.classList.toggle('dark');
             try { localStorage.setItem('anhsangpdf-theme', isDark ? 'dark' : 'light'); } catch (e) {}
             const icon = document.getElementById('dark-icon');
             if (icon) {
                 icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
-                lucide.createIcons();
+                window.lucide?.createIcons();
             }
         }
 
@@ -1464,6 +1734,7 @@
                 onEnd: function (evt) {
                     const movedItem = imagesData.splice(evt.oldIndex, 1)[0];
                     imagesData.splice(evt.newIndex, 0, movedItem);
+                    setTimeout(renderImageGrid, 0);
                 }
             });
         }
@@ -1835,7 +2106,7 @@
             const progressBar = document.getElementById('progressBar');
             const progressVal = document.getElementById('progressVal');
             const progressText = document.getElementById('progressText');
-            if (!window.jspdf?.jsPDF) { speakChibi('Thư viện xuất PDF chưa tải xong, bạn vui lòng chờ tí hoặc tải lại trang.'); return; }
+            try { await WF.load('jspdf'); } catch (e) { speakChibi('Không tải được thư viện xuất PDF. Kiểm tra mạng rồi bấm lại để thử tải lại.'); return; }
             generateBtn.disabled = true;
             generateBtn.classList.add('opacity-60', 'cursor-not-allowed');
             progressContainer.classList.remove('hidden');
@@ -2037,10 +2308,7 @@
                 return;
             }
             $('pdfManagerWorkspace').classList.remove('hidden');
-            if (!window.PDFLib?.PDFDocument || !window.pdfjsLib?.getDocument) {
-                status('Thư viện xử lý PDF chưa tải xong. Hãy kiểm tra kết nối mạng và tải lại trang.', 'error'); return;
-            }
-            window.pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
+            try { await WF.load('pdflib'); await WF.pdf(); } catch (e) { status('Không tải được thư viện PDF (' + e.message + '). Kiểm tra mạng rồi thử lại.', 'error'); return; }
             let added = 0;
             for (const file of incoming) {
                 if (file.size > MAX_PDF_SIZE) { status(`File "${file.name}" vượt quá giới hạn 150 MB.`, 'error'); continue; }
@@ -2091,84 +2359,87 @@
             });
         }
 
+        let renderToken = 0, thumbObs = null, thumbQ = [], thumbRun = 0;
+        function pumpThumbs() {
+            while (thumbRun < 2 && thumbQ.length) {
+                const job = thumbQ.shift(); thumbRun++;
+                job().catch(() => {}).finally(() => { thumbRun--; pumpThumbs(); });
+            }
+        }
+        async function drawThumb(box, token) {
+            if (token !== renderToken) return;
+            const it = box._item, f = state.files[it.fileIndex], canvas = box.querySelector('canvas');
+            if (!f || !f.pdfjsDoc || !canvas) return;
+            const page = await f.pdfjsDoc.getPage(it.pageNumber);
+            try {
+                const viewport = page.getViewport({ scale: 0.35 });
+                const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
+                canvas.width = Math.ceil(viewport.width * ratio); canvas.height = Math.ceil(viewport.height * ratio);
+                await page.render({ canvasContext: canvas.getContext('2d', { alpha: false }), viewport, transform: ratio !== 1 ? [ratio, 0, 0, ratio, 0, 0] : null }).promise;
+            } finally { page.cleanup(); }
+        }
+
         async function renderPagesGrid() {
+            const token = ++renderToken;
             const grid = $('pdfPagesGrid');
+            if (thumbObs) thumbObs.disconnect();
+            thumbQ = [];
             grid.innerHTML = '';
-            
-            for (let i = 0; i < pdfPagesList.length; i++) {
-                const pageItem = pdfPagesList[i];
+            thumbObs = new IntersectionObserver(entries => entries.forEach(en => {
+                const box = en.target;
+                if (en.isIntersecting && !box._done) {
+                    box._done = true; thumbObs.unobserve(box);
+                    thumbQ.push(() => drawThumb(box, token)); pumpThumbs();
+                }
+            }), { rootMargin: '300px' });
+            const frag = document.createDocumentFragment();
+            pdfPagesList.forEach(pageItem => {
                 const card = document.createElement('div');
                 card.className = 'image-card glass-card rounded-xl p-2 border border-slate-200 dark:border-blue-900/50 relative flex flex-col justify-between transition-all duration-200';
                 card.setAttribute('data-id', pageItem.id);
-
                 const topBar = document.createElement('div');
                 topBar.className = 'flex items-center justify-between gap-1 mb-1.5 z-10';
-
-                // Drag handle icon
                 const dragHandle = document.createElement('div');
                 dragHandle.className = 'pdf-page-drag-handle w-6 h-6 rounded-lg bg-white/90 dark:bg-slate-950/80 border border-slate-200 dark:border-blue-500/40 text-slate-700 dark:text-blue-300 flex items-center justify-center text-xs cursor-grab active:cursor-grabbing hover:bg-slate-100 transition shadow-xs';
                 dragHandle.innerHTML = '<i data-lucide="grip-vertical" class="w-3.5 h-3.5"></i>';
-
                 const pageLabel = document.createElement('span');
                 pageLabel.className = 'text-[10px] font-extrabold text-slate-600 dark:text-blue-300';
                 pageLabel.textContent = `P.${pageItem.pageNumber}`;
-
-                // XÓA VĨNH VIỄN TRANG ĐƯỢC CHỌN (KHÔNG HOÀN TÁC ĐỂ TRÁNH RÁC BỘ NHỚ)
                 const deleteBtn = document.createElement('button');
                 deleteBtn.type = 'button';
-                deleteBtn.className = 'w-6 h-6 rounded-lg bg-rose-500 text-white flex items-center justify-center text-xs hover:bg-rose-600 transition';
+                deleteBtn.className = 'w-7 h-7 rounded-lg bg-rose-500 text-white flex items-center justify-center text-xs hover:bg-rose-600 transition';
                 deleteBtn.title = 'Bấm để xóa hẳn trang này';
                 deleteBtn.innerHTML = '<i data-lucide="trash-2" class="w-3 h-3"></i>';
-                
                 deleteBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    pdfPagesList.splice(i, 1);
-                    renderPagesGrid();
+                    // look the page up by id: indexes go stale after drag-reorder
+                    const idx = pdfPagesList.findIndex(p => p.id === pageItem.id);
+                    if (idx < 0) return;
+                    pdfPagesList.splice(idx, 1);
+                    card.remove();
                     updateCounts();
                     if (window.speakChibi) window.speakChibi("Đã xóa vĩnh viễn trang PDF!");
                 });
-
                 topBar.append(dragHandle, pageLabel, deleteBtn);
-
-                // Preview Canvas Card
-                const canvasContainer = document.createElement('div');
-                canvasContainer.className = 'w-full rounded-lg bg-slate-900/90 border border-slate-200 dark:border-blue-900/50 flex items-center justify-center overflow-hidden relative min-h-[110px]';
-                canvasContainer.style.aspectRatio = '0.72';
-
-                const canvas = document.createElement('canvas');
-                canvas.className = 'max-w-full max-h-full object-contain';
-                canvasContainer.appendChild(canvas);
-
-                const fileObj = state.files[pageItem.fileIndex];
-                if (fileObj && fileObj.pdfjsDoc) {
-                    try {
-                        const page = await fileObj.pdfjsDoc.getPage(pageItem.pageNumber);
-                        const viewport = page.getViewport({ scale: 0.35 });
-                        const ctx = canvas.getContext('2d', { alpha: false });
-                        const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
-                        canvas.width = Math.ceil(viewport.width * ratio);
-                        canvas.height = Math.ceil(viewport.height * ratio);
-                        await page.render({ canvasContext: ctx, viewport, transform: ratio !== 1 ? [ratio, 0, 0, ratio, 0, 0] : null }).promise;
-                        page.cleanup();
-                    } catch (err) {
-                        console.warn('Page thumbnail error', err);
-                    }
-                }
-
+                const box = document.createElement('div');
+                box.className = 'w-full rounded-lg bg-slate-900/90 border border-slate-200 dark:border-blue-900/50 flex items-center justify-center overflow-hidden relative min-h-[110px]';
+                box.style.aspectRatio = '0.72';
+                box._item = pageItem;
+                box.appendChild(document.createElement('canvas')).className = 'max-w-full max-h-full object-contain';
                 const fileMeta = document.createElement('div');
                 fileMeta.className = 'text-[10px] font-semibold text-slate-500 dark:text-blue-300 truncate mt-1.5';
                 fileMeta.textContent = pageItem.fileName;
-
-                card.append(topBar, canvasContainer, fileMeta);
-                grid.appendChild(card);
-            }
-
+                card.append(topBar, box, fileMeta);
+                frag.appendChild(card);
+                thumbObs.observe(box);
+            });
+            grid.appendChild(frag);
             if (window.lucide?.createIcons) window.lucide.createIcons();
             initPdfPagesSortable();
             updateCounts();
         }
 
-        async function exportPdf() {
+                async function exportPdf() {
             if (state.busy) return;
             if (!state.files.length) { status('Vui lòng thêm ít nhất một file PDF.', 'error'); return; }
             
@@ -2307,6 +2578,469 @@
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
         else init();
     })();
+    </script>
+
+    <script>
+/* ===== WikyFile: lazy library loader (pinned versions, retry on CDN failure) ===== */
+window.WF = {
+  libs: {
+    pdfjs: { u: ['https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'], ok: () => window.pdfjsLib },
+    pdflib: { u: ['https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js'], ok: () => window.PDFLib },
+    jspdf: { u: ['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'], ok: () => window.jspdf },
+    tess: { u: ['https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js'], ok: () => window.Tesseract },
+    docx: { u: ['https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js', 'https://cdn.jsdelivr.net/npm/docx@7.8.2/build/index.js'], ok: () => window.docx && window.docx.Document }
+  },
+  p: {},
+  load(k) {
+    const L = this.libs[k];
+    if (L.ok()) return Promise.resolve();
+    if (this.p[k]) return this.p[k];
+    return this.p[k] = (async () => {
+      let err;
+      for (const u of L.u) {
+        try {
+          await new Promise((res, rej) => {
+            const s = document.createElement('script');
+            s.src = u; s.onload = res;
+            s.onerror = () => { s.remove(); rej(new Error('Không tải được ' + u)); };
+            document.head.appendChild(s);
+          });
+          if (L.ok()) return;
+        } catch (e) { err = e; }
+      }
+      delete this.p[k];
+      throw err || new Error('Thư viện ' + k + ' không khả dụng');
+    })();
+  },
+  async pdf() {
+    await this.load('pdfjs');
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+};
+
+/* ===== Network badge ===== */
+(() => {
+  const b = () => document.getElementById('netBadge');
+  const upd = () => { const e = b(); if (e) e.classList.toggle('hidden', navigator.onLine); };
+  window.addEventListener('online', () => { upd(); window.speakChibi && speakChibi('Đã có mạng trở lại!'); });
+  window.addEventListener('offline', () => { upd(); window.speakChibi && speakChibi('Bạn đang offline. Xử lý cục bộ vẫn hoạt động.'); });
+  document.addEventListener('DOMContentLoaded', upd);
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    window.addEventListener('load', () => fetch('sw.js', { method: 'HEAD' }).then(r => r.ok && navigator.serviceWorker.register('sw.js')).catch(() => {}));
+  }
+})();
+
+/* ===== PDF -> Word ===== */
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const W = { files: [], sel: -1, busy: false, cancel: false, doc: null, ocr: null };
+  const MAX_FILES = 10, MAX_SIZE = 150 * 1024 * 1024;
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const yieldUI = () => new Promise(r => setTimeout(r, 0));
+  const median = a => { const s = a.slice().sort((x, y) => x - y); return s.length ? s[s.length >> 1] : 10; };
+  const say = (m, t) => {
+    const e = $('wordStatus'); e.textContent = m;
+    e.className = 'text-xs font-semibold rounded-xl p-3 ' + (t === 'error' ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300' : t === 'success' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300' : 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300');
+  };
+  const prog = (p, l) => { $('wordProg').classList.remove('hidden'); $('wordProgText').textContent = l; $('wordProgVal').textContent = p + '%'; $('wordProgBar').style.width = p + '%'; };
+  const safeName = n => (n || 'WikyFile_Converted').normalize('NFC').replace(/\.(docx|md|pdf)$/i, '').replace(/[\\/:*?"<>|\u0000-\u001f]+/g, '_').trim().slice(0, 100) || 'WikyFile_Converted';
+  const download = (blob, name) => {
+    const u = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(u), 30000);
+  };
+
+  /* ---- Tab 2 has its own upload zone and file list ---- */
+  const files = () => W.files;
+  const cur = () => W.files[W.sel] || null;
+  async function isPdf(file) {
+    const head = new Uint8Array(await file.slice(0, 1024).arrayBuffer());
+    return new TextDecoder('latin1').decode(head).includes('%PDF-');
+  }
+  async function addFiles(list) {
+    if (W.busy) return;
+    const inc = Array.from(list || []);
+    if (!inc.length) return;
+    if (W.files.length + inc.length > MAX_FILES) { say('Mỗi lượt hỗ trợ tối đa ' + MAX_FILES + ' tệp PDF.', 'error'); return; }
+    try { await WF.pdf(); } catch (e) { say('Không tải được PDF.js (' + e.message + '). Kiểm tra mạng rồi thử lại.', 'error'); return; }
+    $('wordWorkspace').classList.remove('hidden');
+    let added = 0;
+    for (const file of inc) {
+      if (file.size > MAX_SIZE) { say('"' + file.name + '" vượt quá giới hạn 150 MB.', 'error'); continue; }
+      if (!(await isPdf(file))) { say('"' + file.name + '" không phải PDF thực sự (sai chữ ký tệp).', 'error'); continue; }
+      try {
+        const pdfjsDoc = await window.pdfjsLib.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+        if (!pdfjsDoc.numPages) throw new Error('PDF không có trang.');
+        W.files.push({ name: file.name, size: file.size, pdfjsDoc, pageCount: pdfjsDoc.numPages });
+        if (W.sel < 0) W.sel = 0;
+        added++;
+      } catch (e) {
+        say(e && e.name === 'PasswordException' ? '"' + file.name + '" được bảo vệ bằng mật khẩu — hãy dùng bản không khóa.' : 'Không thể đọc "' + file.name + '": tệp hỏng hoặc không hợp lệ.', 'error');
+      }
+    }
+    refresh();
+    if (added) { say('Đã tải lên ' + added + ' tệp PDF. Đang nhận diện loại tài liệu...'); if (window.speakChibi) speakChibi('Đã nạp ' + added + ' tệp PDF! Chọn chế độ Word rồi bấm chuyển đổi nhé.'); }
+  }
+  function removeAt(i) {
+    if (W.busy) return;
+    const f = W.files.splice(i, 1)[0];
+    try { f.pdfjsDoc.destroy(); } catch (_) {}
+    W.sel = W.files.length ? Math.min(W.sel, W.files.length - 1) : -1;
+    if (!W.files.length) { $('wordWorkspace').classList.add('hidden'); $('wordResult').classList.add('hidden'); W.doc = null; }
+    refresh();
+  }
+  function clearAll() { if (W.busy) return; while (W.files.length) removeAt(0); }
+  async function detect(f) {
+    if (f._detecting || f.kinds || f.kerr) return;
+    f._detecting = true;
+    const kinds = []; let t = 0, s = 0;
+    try {
+      for (let p = 1; p <= f.pageCount; p++) {
+        if (!files().includes(f)) return;
+        const pg = await f.pdfjsDoc.getPage(p), tc = await pg.getTextContent();
+        const n = tc.items.reduce((a, i) => a + (i.str || '').trim().length, 0);
+        const k = n >= 25 ? 'text' : 'scan'; kinds.push(k); k === 'text' ? t++ : s++;
+        pg.cleanup();
+        if (p % 5 === 0) await yieldUI();
+      }
+      f.kinds = kinds;
+      f.kstate = s === 0 ? 'Loại A • PDF có văn bản' : t === 0 ? 'Loại B • PDF scan (cần OCR)' : 'Loại C • Hỗn hợp: ' + t + ' trang văn bản, ' + s + ' trang scan';
+    } catch (e) { f.kerr = true; f.kstate = 'Không nhận diện được loại PDF'; }
+    finally { f._detecting = false; if (W.files.includes(f)) refresh(); }
+  }
+  function refresh() {
+    const host = $('wordFileList'); host.innerHTML = '';
+    W.files.forEach((f, i) => {
+      const row = document.createElement('div');
+      row.className = 'flex items-center gap-2 p-2.5 rounded-xl border cursor-pointer ' + (i === W.sel ? 'border-sapphire-500 bg-blue-50/70 dark:bg-blue-950/40' : 'border-slate-200 dark:border-blue-900/50 bg-white/70 dark:bg-slate-900/60');
+      row.innerHTML = '<div class="min-w-0 flex-1"><div class="text-xs font-bold text-slate-800 dark:text-white truncate">' + esc(f.name) + '</div><div class="text-[10px] text-slate-500 dark:text-blue-300">' + f.pageCount + ' trang • ' + (f.size / 1048576).toFixed(2) + ' MB • ' + esc(f.kstate || (i === W.sel ? 'Đang nhận diện loại PDF...' : 'Chạm để chọn và nhận diện')) + '</div></div>';
+      const del = document.createElement('button');
+      del.type = 'button'; del.title = 'Xóa tệp PDF'; del.className = 'glass-input w-8 h-8 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 flex items-center justify-center transition'; del.innerHTML = '<i data-lucide="trash-2" class="w-3.5 h-3.5"></i>';
+      del.disabled = W.busy;
+      del.onclick = e => { e.stopPropagation(); removeAt(i); };
+      row.onclick = () => { if (!W.busy) { W.sel = i; refresh(); } };
+      row.appendChild(del); host.appendChild(row);
+    });
+    $('wordSummary').textContent = W.files.length ? W.files.length + ' tệp PDF • đang chọn: ' + (cur() ? cur().name : '') : 'Chưa có tệp PDF';
+    if (window.lucide) lucide.createIcons();
+    const f = cur(); if (f && !f.kinds && !f.kerr) detect(f);
+  }
+  /* OCR service URL is discovered from the site itself (never typed by the user, never contains a secret) */
+  let epP = null;
+  function discoverEndpoint() {
+    return epP || (epP = (async () => {
+      const ok = u => { try { const x = new URL(u, location.href); return (x.protocol === 'https:' || x.hostname === 'localhost' || x.hostname === '127.0.0.1') ? x.href : null; } catch (_) { return null; } };
+      const m = document.querySelector('meta[name="wikyfile-ocr-endpoint"]');
+      const u = window.WIKYFILE_OCR_ENDPOINT || (window.WIKYFILE_CONFIG && window.WIKYFILE_CONFIG.ocrEndpoint) || (m && m.content);
+      if (u && ok(u)) return ok(u);
+      if (location.protocol !== 'file:') {
+        try { const r = await fetch('wikyfile-config.json', { cache: 'no-store' }); if (r.ok) { const j = await r.json(); if (j && ok(j.ocrEndpoint)) return ok(j.ocrEndpoint); } } catch (_) {}
+      }
+      return null;
+    })());
+  }
+
+  /* ---- extraction: text pages (pdf.js text layer -> structured blocks + layout metadata) ---- */
+  const LIST_RE = /^(?:([-•●▪–·])|(\d{1,3})[.)]|([a-z])[.)])\s+/;
+  function alignOf(x0, x1, pw) {
+    const c = (x0 + x1) / 2;
+    if (Math.abs(c - pw / 2) < pw * 0.04 && x0 > pw * 0.15) return 'center';
+    if (pw - x1 < pw * 0.08 && x0 > pw * 0.4) return 'right';
+    return 'left';
+  }
+  function structure(lines, pw, ph) {
+    const med = median(lines.map(l => l.h)), blocks = [];
+    let i = 0;
+    while (i < lines.length) {
+      const L = lines[i];
+      if (L.cells.length >= 2) {
+        let j = i;
+        while (j < lines.length && lines[j].cells.length >= 2 && Math.abs(lines[j].cells.length - L.cells.length) <= 1) j++;
+        if (j - i >= 2) {
+          const seg = lines.slice(i, j);
+          blocks.push({ type: 'table', rows: seg.map(l => l.cells.map(c => c.t)), bbox: [Math.min(...seg.map(l => l.x0)), seg[0].top, Math.max(...seg.map(l => l.x1)), seg[seg.length - 1].top + seg[seg.length - 1].h] });
+          i = j; continue;
+        }
+      }
+      const b = { type: 'p', text: L.text, size: L.h, align: alignOf(L.x0, L.x1, pw), bbox: [L.x0, L.top, L.x1, L.top + L.h] };
+      const m = L.text.match(LIST_RE);
+      if (L.h >= med * 1.6 && L.text.length < 120) b.type = 'h1';
+      else if (L.h >= med * 1.3 && L.text.length < 120) b.type = 'h2';
+      else if (m) { b.type = m[2] ? 'ol' : 'ul'; b.n = m[2] ? +m[2] : 0; b.text = L.text.slice(m[0].length); }
+      if (b.type === 'p') {
+        while (i + 1 < lines.length) {
+          const N = lines[i + 1];
+          if (N.cells.length >= 2 || LIST_RE.test(N.text) || N.h >= med * 1.3 || (N.top - (L.top + L.h)) > L.h * 0.9) break;
+          b.text += ' ' + N.text; b.bbox[3] = N.top + N.h; b.bbox[2] = Math.max(b.bbox[2], N.x1); i++;
+        }
+      }
+      blocks.push(b); i++;
+    }
+    return blocks;
+  }
+  async function textPage(page, vp, n) {
+    const tc = await page.getTextContent(), pw = vp.width, ph = vp.height;
+    const its = tc.items.filter(i => i.str && i.str.trim()).map(i => ({ s: i.str, x: i.transform[4], y: i.transform[5], h: Math.hypot(i.transform[2], i.transform[3]) || i.height || 10, w: i.width }));
+    its.sort((a, b) => b.y - a.y || a.x - b.x);
+    const lines = [];
+    for (const it of its) {
+      const L = lines[lines.length - 1];
+      if (L && Math.abs(L.y - it.y) < Math.max(2, it.h * 0.5)) L.its.push(it); else lines.push({ y: it.y, its: [it] });
+    }
+    lines.forEach(L => {
+      L.its.sort((a, b) => a.x - b.x);
+      L.h = Math.max(...L.its.map(i => i.h)); L.top = ph - L.y - L.h * 0.8;
+      L.x0 = L.its[0].x; L.x1 = Math.max(...L.its.map(i => i.x + i.w));
+      const cells = []; let cur = null;
+      for (const i of L.its) {
+        if (cur && i.x - cur.x1 < L.h * 1.2) { cur.t += (i.x - cur.x1 > L.h * 0.15 && !cur.t.endsWith(' ') && !i.s.startsWith(' ') ? ' ' : '') + i.s; cur.x1 = i.x + i.w; }
+        else { cur = { t: i.s, x1: i.x + i.w }; cells.push(cur); }
+      }
+      L.cells = cells.map(c => ({ t: c.t.replace(/\s+/g, ' ').trim() }));
+      L.text = L.cells.map(c => c.t).join(' ').trim();
+    });
+    const blocks = structure(lines, pw, ph);
+    const xs = lines.map(l => l.x0), xe = lines.map(l => l.x1);
+    return { n, kind: 'text', w: pw, h: ph, margins: lines.length ? { l: Math.min(...xs), r: pw - Math.max(...xe), t: lines[0].top, b: ph - (lines[lines.length - 1].top + lines[lines.length - 1].h) } : null, blocks, conf: 100 };
+  }
+
+  /* ---- OCR provider architecture ---- */
+  const OCR = {
+    async tess() {
+      await WF.load('tess');
+      const w = await window.Tesseract.createWorker($('wordLang').value);
+      return { name: 'tesseract', worker: w, async run(canvas) {
+        const d = (await w.recognize(canvas)).data;
+        const paras = d.paragraphs || (d.blocks ? d.blocks.flatMap(b => b.paragraphs || []) : null);
+        if (paras && paras.length) return { conf: d.confidence, paras: paras.map(p => ({ text: p.text, bbox: [p.bbox.x0, p.bbox.y0, p.bbox.x1, p.bbox.y1], lh: p.lines && p.lines[0] ? p.lines[0].bbox.y1 - p.lines[0].bbox.y0 : 0 })) };
+        return { conf: d.confidence, paras: (d.text || '').split(/\n{2,}/).map(t => ({ text: t, bbox: null, lh: 0 })) };
+      }, close: () => w.terminate() };
+    },
+    async proxy() {
+      const url = await discoverEndpoint();
+      if (!url) throw new Error('Trang web chưa cấu hình dịch vụ OCR.');
+      return { name: 'proxy', url, async run(canvas) {
+        const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.9));
+        const fd = new FormData(); fd.append('image', blob, 'page.jpg'); fd.append('lang', $('wordLang').value);
+        const res = await fetch(url, { method: 'POST', body: fd });
+        if (!res.ok) throw new Error('Dịch vụ OCR trả về lỗi ' + res.status);
+        const j = await res.json();
+        const paras = Array.isArray(j.paragraphs) ? j.paragraphs.map(p => ({ text: p.text || '', bbox: p.bbox || null, lh: p.lineHeight || 0 })) : String(j.text || '').split(/\n{2,}/).map(t => ({ text: t, bbox: null, lh: 0 }));
+        return { conf: typeof j.confidence === 'number' ? j.confidence : 75, paras };
+      }, close() {} };
+    }
+  };
+  async function ocrPage(page, vp, n, eng) {
+    const target = matchMedia('(pointer:coarse)').matches ? 1600 : 2200;
+    const sc = Math.min(3, target / Math.max(vp.width, vp.height));
+    const v = page.getViewport({ scale: sc }), canvas = document.createElement('canvas');
+    canvas.width = Math.ceil(v.width); canvas.height = Math.ceil(v.height);
+    try {
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport: v }).promise;
+      const r = await eng.run(canvas);
+      const paras = r.paras.map(p => ({ ...p, text: p.text.replace(/\s*\n\s*/g, ' ').trim() })).filter(p => p.text);
+      const med = median(paras.map(p => p.lh).filter(Boolean));
+      const blocks = paras.map(p => {
+        const bb = p.bbox ? p.bbox.map(x => x / sc) : null;
+        const size = p.lh ? p.lh / sc * 0.85 : 11;
+        const b = { type: 'p', text: p.text, size, align: bb ? alignOf(bb[0], bb[2], vp.width) : 'left', bbox: bb };
+        const m = p.text.match(LIST_RE);
+        if (p.lh && med && p.lh >= med * 1.5 && p.text.length < 120) b.type = 'h1';
+        else if (p.lh && med && p.lh >= med * 1.25 && p.text.length < 120) b.type = 'h2';
+        else if (m) { b.type = m[2] ? 'ol' : 'ul'; b.n = m[2] ? +m[2] : 0; b.text = p.text.slice(m[0].length); }
+        return b;
+      });
+      return { n, kind: 'ocr', w: vp.width, h: vp.height, margins: null, blocks, conf: Math.round(r.conf || 0) };
+    } finally { canvas.width = 0; canvas.height = 0; }
+  }
+
+  /* ---- Markdown <-> blocks ---- */
+  const tbl = rows => {
+    const c = Math.max(...rows.map(r => r.length)), line = r => '| ' + Array.from({ length: c }, (_, i) => (r[i] || '').replace(/\|/g, '\\|')).join(' | ') + ' |';
+    return [line(rows[0]), '|' + ' --- |'.repeat(c), ...rows.slice(1).map(line)].join('\n');
+  };
+  const toMd = doc => doc.pages.map(p => '<!--page:' + p.n + '-->\n\n' + (p.err ? '> Trang lỗi: ' + p.err : p.blocks.map(b =>
+    b.type === 'table' ? tbl(b.rows) : b.type[0] === 'h' ? '#'.repeat(+b.type[1]) + ' ' + b.text.replace(/\*/g, '\\*') :
+    b.type === 'ol' ? (b.n || 1) + '. ' + b.text.replace(/\*/g, '\\*') : b.type === 'ul' ? '- ' + b.text.replace(/\*/g, '\\*') : b.text.replace(/\*/g, '\\*')).join('\n\n'))).join('\n\n');
+  function parse(src) {
+    const pages = []; let cur = { n: 1, blocks: [] }; pages.push(cur);
+    for (let ch of src.replace(/\r/g, '').split(/\n{2,}/)) {
+      ch = ch.trim(); if (!ch) continue;
+      let m = ch.match(/^<!--page:(\d+)-->\s*([\s\S]*)$/);
+      if (m) { if (!cur.blocks.length) cur.n = +m[1]; else pages.push(cur = { n: +m[1], blocks: [] }); ch = m[2].trim(); if (!ch) continue; }
+      if (/^<!--pagebreak-->$/.test(ch)) { cur.blocks.push({ type: 'br' }); continue; }
+      const lines = ch.split('\n');
+      if (lines.every(l => /^\|/.test(l.trim()))) {
+        const rows = lines.filter(l => !/^\|?\s*:?-{2,}/.test(l.trim().replace(/^\|\s*/, ''))).map(l => l.trim().replace(/^\||\|$/g, '').split(/(?<!\\)\|/).map(c => c.trim().replace(/\\\|/g, '|')));
+        if (rows.length) cur.blocks.push({ type: 'table', rows }); continue;
+      }
+      if (lines.length === 1 && (m = ch.match(/^(#{1,3})\s+(.*)$/))) { cur.blocks.push({ type: 'h' + m[1].length, text: m[2] }); continue; }
+      if (lines.every(l => /^(- |\d+\. )/.test(l))) {
+        lines.forEach(l => { const o = l.match(/^(\d+)\. (.*)$/); cur.blocks.push(o ? { type: 'ol', n: +o[1], text: o[2] } : { type: 'ul', text: l.slice(2) }); });
+        continue;
+      }
+      cur.blocks.push({ type: 'p', text: lines.join(' ') });
+    }
+    return pages;
+  }
+  const inline = t => esc(t.replace(/\\([*|])/g, '$1')).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/\*([^*]+)\*/g, '<i>$1</i>');
+  function preview() {
+    const pages = parse($('wordMd').value);
+    $('wordPrev').innerHTML = pages.map(p => '<div class="text-[10px] text-slate-400 border-t border-dashed my-2">— Trang ' + p.n + ' —</div>' + p.blocks.map(b =>
+      b.type === 'table' ? '<table class="border-collapse w-full my-2">' + b.rows.map(r => '<tr>' + r.map(c => '<td class="border border-slate-400 px-2 py-1">' + inline(c) + '</td>').join('') + '</tr>').join('') + '</table>' :
+      b.type[0] === 'h' ? '<h' + (+b.type[1] + 1) + ' class="font-bold my-2" style="font-size:' + (22 - b.type[1] * 3) + 'px">' + inline(b.text) + '</h' + (+b.type[1] + 1) + '>' :
+      b.type === 'ul' ? '<div class="ml-4">• ' + inline(b.text) + '</div>' : b.type === 'ol' ? '<div class="ml-4">' + (b.n || 1) + '. ' + inline(b.text) + '</div>' :
+      b.type === 'br' ? '<hr class="my-2">' : '<p class="my-1.5">' + inline(b.text) + '</p>').join('')).join('');
+  }
+
+  /* ---- DOCX export (real .docx via docx library) ---- */
+  async function buildDocx(mode) {
+    await WF.load('docx');
+    const D = window.docx, pages = parse($('wordMd').value), layout = mode === 'layout';
+    const runs = (t, size) => t.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/).filter(Boolean).map(s => {
+      let b = false, i = false;
+      if (/^\*\*[^*]+\*\*$/.test(s)) { b = true; s = s.slice(2, -2); } else if (/^\*[^*]+\*$/.test(s)) { i = true; s = s.slice(1, -1); }
+      return new D.TextRun({ text: s.replace(/\\([*|])/g, '$1'), bold: b, italics: i, font: 'Arial', size });
+    });
+    const AL = { left: D.AlignmentType.LEFT, center: D.AlignmentType.CENTER, right: D.AlignmentType.RIGHT };
+    const HL = [null, D.HeadingLevel.HEADING_1, D.HeadingLevel.HEADING_2, D.HeadingLevel.HEADING_3];
+    const ch = []; let inst = 0, prevOl = false;
+    pages.forEach((pg, pi) => {
+      const o = W.doc && W.doc.pages.find(x => x.n === pg.n);
+      const real = pg.blocks.filter(b => b.type !== 'br');
+      const meta = layout && o && o.blocks.length === real.length ? o.blocks : null; // metadata only valid if the user did not change block structure
+      if (layout && pi > 0) ch.push(new D.Paragraph({ children: [new D.PageBreak()] }));
+      let k = 0;
+      pg.blocks.forEach(b => {
+        const m = b.type === 'br' ? null : (meta ? meta[k++] : null);
+        const sz = m && m.size ? Math.max(16, Math.min(56, Math.round(m.size * 2))) : 22;
+        if (b.type !== 'ol') prevOl = false;
+        if (b.type === 'br') ch.push(new D.Paragraph({ children: [new D.PageBreak()] }));
+        else if (b.type === 'table') {
+          if (mode === 'plain') b.rows.forEach(r => ch.push(new D.Paragraph({ children: [new D.TextRun({ text: r.join('\t'), font: 'Arial', size: 22 })] })));
+          else {
+            const c = Math.max(...b.rows.map(r => r.length));
+            ch.push(new D.Table({ width: { size: 100, type: D.WidthType.PERCENTAGE }, rows: b.rows.map(r => new D.TableRow({ children: Array.from({ length: c }, (_, i) => new D.TableCell({ children: [new D.Paragraph({ children: runs(r[i] || '', 22) })] })) })) }));
+            ch.push(new D.Paragraph({ children: [] }));
+          }
+        } else if (b.type[0] === 'h') ch.push(new D.Paragraph({ heading: mode === 'plain' ? undefined : HL[+b.type[1]], alignment: m ? AL[m.align] : undefined, spacing: { before: 200, after: 120 }, children: runs(b.text, mode === 'plain' ? 24 : (layout && m ? sz : { 1: 36, 2: 30, 3: 26 }[+b.type[1]])).map(r => r) }));
+        else if (b.type === 'ul') ch.push(new D.Paragraph({ bullet: mode === 'plain' ? undefined : { level: 0 }, children: runs((mode === 'plain' ? '- ' : '') + b.text, sz) }));
+        else if (b.type === 'ol') {
+          if (!prevOl) inst++; prevOl = true;
+          ch.push(new D.Paragraph(mode === 'plain' ? { children: runs((b.n || 1) + '. ' + b.text, sz) } : { numbering: { reference: 'wf-ol', level: 0, instance: inst }, children: runs(b.text, sz) }));
+        } else ch.push(new D.Paragraph({ alignment: m ? AL[m.align] : undefined, spacing: { after: layout ? 100 : 160 }, children: runs(b.text, sz) }));
+      });
+    });
+    const first = W.doc && W.doc.pages.find(p => p.w);
+    const lw = first && first.w > first.h, pw = first ? Math.round(Math.min(first.w, first.h) * 20) : 11906, ph = first ? Math.round(Math.max(first.w, first.h) * 20) : 16838;
+    const mg = first && first.margins && layout ? ['t', 'r', 'b', 'l'].map(s => Math.round(Math.max(36, Math.min(144, first.margins[s])) * 20)) : [1134, 1134, 1134, 1134];
+    const doc = new D.Document({
+      creator: 'WikyFile', title: safeName($('wordOutName').value),
+      numbering: { config: [{ reference: 'wf-ol', levels: [{ level: 0, format: D.LevelFormat.DECIMAL, text: '%1.', alignment: D.AlignmentType.START }] }] },
+      sections: [{
+        properties: { page: { size: { width: pw, height: ph, orientation: lw ? D.PageOrientation.LANDSCAPE : D.PageOrientation.PORTRAIT }, margin: { top: mg[0], right: mg[1], bottom: mg[2], left: mg[3] } } },
+        footers: mode === 'plain' ? undefined : { default: new D.Footer({ children: [new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [new D.TextRun({ children: [D.PageNumber.CURRENT], font: 'Arial', size: 18 })] })] }) },
+        children: ch.length ? ch : [new D.Paragraph({ children: [] })]
+      }]
+    });
+    return D.Packer.toBlob(doc);
+  }
+
+  /* ---- convert flow ---- */
+  function stats() {
+    const d = W.doc, tot = d.total, done = d.pages.filter(p => !p.err).length, err = d.pages.filter(p => p.err).length;
+    const rev = d.pages.filter(p => !p.err && (!p.blocks.length || (p.kind === 'ocr' && p.conf < 70))).length;
+    $('wordStats').innerHTML = [['Tổng số trang', tot], ['Đã nhận dạng', done], ['Cần kiểm tra', rev], ['Trang lỗi', err]].map(([l, v]) => '<div class="glass-card rounded-xl p-2"><div class="text-lg font-extrabold font-mono text-sapphire-600 dark:text-blue-400">' + v + '</div><div class="text-[10px] font-semibold text-slate-500 dark:text-blue-300">' + l + '</div></div>').join('');
+    const w = [];
+    d.pages.forEach(p => {
+      if (p.err) w.push('Trang ' + p.n + ': lỗi — ' + p.err);
+      else if (!p.blocks.length) w.push('Trang ' + p.n + ': không có nội dung nhận dạng được (trang trống hoặc ảnh).');
+      else if (p.kind === 'ocr' && p.conf < 70) w.push('Trang ' + p.n + ': OCR độ tin cậy thấp (' + p.conf + '%) — hãy kiểm tra chữ, đặc biệt nếu là chữ viết tay.');
+    });
+    if (d.pages.some(p => p.kind === 'ocr')) w.push('Trang scan: bảng biểu, công thức, ô gộp và hình ảnh không được dựng lại tự động; cần chỉnh tay trong ô Markdown.');
+    $('wordWarn').innerHTML = w.slice(0, 30).map(x => '<li>' + esc(x) + '</li>').join('');
+  }
+  async function convert() {
+    const f = cur();
+    if (W.busy || !f) return;
+    if (!f.kinds || f.kinds.length < f.pageCount) { say('Đang nhận diện loại PDF, vui lòng chờ vài giây rồi bấm lại.'); return; }
+    const hasScan = f.kinds.includes('scan');
+    if (hasScan && $('wordOcr').value === 'proxy') { const ep = await discoverEndpoint(); if (!ep || !confirm('Các trang scan sẽ được GỬI dưới dạng ảnh tới dịch vụ OCR của trang web:\n' + new URL(ep).host + '\n\nChỉ đồng ý nếu bạn chấp nhận gửi nội dung tài liệu này. Tiếp tục?')) return; }
+    if ($('wordMd').value && W.doc && !confirm('Kết quả hiện tại (kể cả phần bạn đã sửa) sẽ bị thay thế. Tiếp tục?')) return;
+    W.busy = true; W.cancel = false; refresh();
+    $('wordConvertBtn').disabled = true; $('wordCancelBtn').classList.remove('hidden');
+    const doc = { name: f.name, total: f.pageCount, pages: [] };
+    let eng = null;
+    try {
+      await WF.pdf();
+      for (let p = 1; p <= doc.total && !W.cancel; p++) {
+        const kind = f.kinds[p - 1];
+        prog(Math.round((p - 1) / doc.total * 100), 'Trang ' + p + '/' + doc.total + ' • ' + (kind === 'text' ? 'trích xuất văn bản' : 'OCR') + ' • còn ' + (doc.total - p + 1) + ' trang');
+        const page = await f.pdfjsDoc.getPage(p), vp = page.getViewport({ scale: 1 });
+        try {
+          if (kind === 'text') doc.pages.push(await textPage(page, vp, p));
+          else {
+            if (!eng) { say('Đang chuẩn bị OCR (lần đầu cần tải dữ liệu ngôn ngữ, cần Internet)...'); eng = W.ocr = await OCR[$('wordOcr').value](); }
+            doc.pages.push(await ocrPage(page, vp, p, eng));
+          }
+        } catch (e) {
+          if (W.cancel) break;
+          if (!eng && kind !== 'text') throw e; // OCR engine itself failed to load: stop and let the user retry
+          doc.pages.push({ n: p, kind: 'error', err: e.message || 'lỗi không xác định', blocks: [], w: vp.width, h: vp.height });
+        } finally { page.cleanup(); }
+        await yieldUI();
+      }
+      W.doc = doc;
+      $('wordMd').value = toMd(doc); preview(); stats();
+      $('wordResult').classList.remove('hidden');
+      say(W.cancel ? 'Đã hủy. Giữ lại ' + doc.pages.length + '/' + doc.total + ' trang đã xử lý.' : 'Hoàn tất ' + doc.pages.length + '/' + doc.total + ' trang. Hãy kiểm tra nội dung trước khi xuất Word.', W.cancel ? 'info' : 'success');
+    } catch (e) {
+      say('Không thể hoàn tất: ' + (e.message || e) + '. Bấm "Bắt đầu chuyển đổi" để thử lại.', 'error');
+      if (doc.pages.length) { W.doc = doc; $('wordMd').value = toMd(doc); preview(); stats(); $('wordResult').classList.remove('hidden'); }
+    } finally {
+      if (eng) { try { eng.close(); } catch (_) {} } W.ocr = null;
+      W.busy = false; refresh(); $('wordConvertBtn').disabled = false; $('wordCancelBtn').classList.add('hidden');
+      setTimeout(() => $('wordProg').classList.add('hidden'), 1200);
+    }
+  }
+  async function exportDocx() {
+    if (!$('wordMd').value.trim()) { say('Chưa có nội dung để xuất.', 'error'); return; }
+    const btn = $('wordExportBtn'); btn.disabled = true;
+    try {
+      say('Đang tạo tệp Word...');
+      download(await buildDocx($('wordMode').value), safeName($('wordOutName').value || (W.doc && W.doc.name)) + '.docx');
+      say('Đã xuất tệp .docx.', 'success');
+    } catch (e) { say('Không thể tạo DOCX: ' + (e.message || e) + '. Kiểm tra mạng (tải thư viện docx) rồi thử lại.', 'error'); }
+    finally { btn.disabled = false; }
+  }
+
+  function init() {
+    const drop = $('wordDropArea'), input = $('wordFileInput');
+    drop.addEventListener('click', () => input.click());
+    input.addEventListener('change', async () => { await addFiles(input.files); input.value = ''; });
+    ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); drop.classList.add('border-sapphire-600', 'bg-blue-100/70'); }));
+    ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); drop.classList.remove('border-sapphire-600', 'bg-blue-100/70'); }));
+    drop.addEventListener('drop', e => addFiles(e.dataTransfer && e.dataTransfer.files));
+    $('wordAddBtn').addEventListener('click', () => input.click());
+    $('wordClearBtn').addEventListener('click', clearAll);
+    discoverEndpoint().then(u => {
+      if (u) { const o = document.createElement('option'); o.value = 'proxy'; o.textContent = 'Dịch vụ OCR của trang web (' + new URL(u).host + ') — gửi ảnh trang scan, cần đồng ý'; $('wordOcr').appendChild(o); }
+      else $('wordOcrNote').textContent += ' Trang web này chưa cấu hình dịch vụ OCR đám mây nên chỉ có OCR cục bộ.';
+    });
+    $('wordConvertBtn').addEventListener('click', convert);
+    $('wordCancelBtn').addEventListener('click', () => { W.cancel = true; if (W.ocr) try { W.ocr.close(); } catch (_) {} });
+    let t; $('wordMd').addEventListener('input', () => { clearTimeout(t); t = setTimeout(preview, 250); });
+    $('wordExportBtn').addEventListener('click', exportDocx);
+    $('wordMdBtn').addEventListener('click', () => download(new Blob([$('wordMd').value], { type: 'text/markdown;charset=utf-8' }), safeName($('wordOutName').value || (W.doc && W.doc.name)) + '.md'));
+    $('wordBreakBtn').addEventListener('click', () => {
+      const ta = $('wordMd'), s = ta.selectionStart;
+      ta.value = ta.value.slice(0, s) + '\n\n<!--pagebreak-->\n\n' + ta.value.slice(ta.selectionEnd); preview();
+    });
+    window.addEventListener('beforeunload', e => { if (W.busy || (W.doc && $('wordMd').value)) { e.preventDefault(); e.returnValue = ''; } });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true }); else init();
+})();
     </script>
 
 </body>
