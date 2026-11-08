@@ -384,6 +384,14 @@
 
         /* ---- Pro upgrade: mobile performance & touch ---- */
         .tab-btn { white-space: nowrap; min-height: 44px; }
+        .config-panel { overflow: hidden; }
+        .config-panel-header { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+        .config-panel-toggle { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 9999px; border: 1px solid rgba(148, 163, 184, 0.5); background: rgba(255,255,255,0.6); color: #475569; transition: transform .2s ease, background .2s ease; }
+        .dark .config-panel-toggle { background: rgba(15, 23, 42, 0.65); color: #bfdbfe; border-color: rgba(96, 165, 250, 0.4); }
+        .config-panel-toggle:hover { background: rgba(59, 130, 246, 0.08); }
+        .config-panel-body { display: block; }
+        .config-panel.is-collapsed .config-panel-body { display: none; }
+        #wiky-sync { display: none !important; }
         @media (max-width: 640px), (pointer: coarse) {
             .glass-header, .glass-panel, .glass-card, .glass-input { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
             .glass-header { background: rgba(255,255,255,.95); } .dark .glass-header { background: rgba(10,16,30,.97); }
@@ -603,41 +611,48 @@
                         </div>
 
                         <!-- PDF SETTINGS PANEL -->
-                        <div class="glass-card p-4 sm:p-6 rounded-2xl space-y-5 border border-slate-200 dark:border-blue-500/20">
-                            <div class="flex items-center space-x-2 text-slate-900 dark:text-white font-bold text-sm">
-                                <i data-lucide="sliders" class="w-4 h-4 text-sapphire-500"></i>
-                                <span>Cấu hình File PDF</span>
+                        <div class="glass-card config-panel p-4 sm:p-6 rounded-2xl space-y-5 border border-slate-200 dark:border-blue-500/20" data-default-collapsed="true">
+                            <div class="config-panel-header">
+                                <div class="flex items-center space-x-2 text-slate-900 dark:text-white font-bold text-sm">
+                                    <i data-lucide="sliders" class="w-4 h-4 text-sapphire-500"></i>
+                                    <span>Cấu hình File PDF</span>
+                                </div>
+                                <button type="button" class="config-panel-toggle" aria-label="Mở/thu gọn cấu hình" aria-expanded="false">
+                                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                                </button>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
-                                <!-- Page Size -->
-                                <div>
-                                    <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Khổ Giấy</label>
-                                    <select id="pageSize" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
-                                        <option value="a4" class="bg-white dark:bg-slate-900">Khổ A4</option>
-                                        <option value="letter" class="bg-white dark:bg-slate-900">Khổ US Letter</option>
-                                        <option value="fit" class="bg-white dark:bg-slate-900">Tự Động Vừa Khung Ảnh gốc</option>
-                                    </select>
-                                </div>
+                            <div class="config-panel-body">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+                                    <!-- Page Size -->
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Khổ Giấy</label>
+                                        <select id="pageSize" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                            <option value="a4" class="bg-white dark:bg-slate-900">Khổ A4</option>
+                                            <option value="letter" class="bg-white dark:bg-slate-900">Khổ US Letter</option>
+                                            <option value="fit" class="bg-white dark:bg-slate-900">Tự Động Vừa Khung Ảnh gốc</option>
+                                        </select>
+                                    </div>
 
-                                <!-- Page Orientation -->
-                                <div>
-                                    <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Hướng Trang</label>
-                                    <select id="pageOrientation" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
-                                        <option value="portrait" class="bg-white dark:bg-slate-900">Trang Dọc</option>
-                                        <option value="landscape" class="bg-white dark:bg-slate-900">Trang Ngang</option>
-                                        <option value="auto" class="bg-white dark:bg-slate-900">Tự Động Theo Tỷ Lệ Ảnh</option>
-                                    </select>
-                                </div>
+                                    <!-- Page Orientation -->
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Hướng Trang</label>
+                                        <select id="pageOrientation" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                            <option value="portrait" class="bg-white dark:bg-slate-900">Trang Dọc</option>
+                                            <option value="landscape" class="bg-white dark:bg-slate-900">Trang Ngang</option>
+                                            <option value="auto" class="bg-white dark:bg-slate-900">Tự Động Theo Tỷ Lệ Ảnh</option>
+                                        </select>
+                                    </div>
 
-                                <!-- Page Margin -->
-                                <div>
-                                    <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Khoảng Cách Lề</label>
-                                    <select id="pageMargin" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
-                                        <option value="0" class="bg-white dark:bg-slate-900">Không Có Lề</option>
-                                        <option value="5" class="bg-white dark:bg-slate-900">Lề Nhỏ</option>
-                                        <option value="10" class="bg-white dark:bg-slate-900">Lề Rộng</option>
-                                    </select>
+                                    <!-- Page Margin -->
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Khoảng Cách Lề</label>
+                                        <select id="pageMargin" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                            <option value="0" class="bg-white dark:bg-slate-900">Không Có Lề</option>
+                                            <option value="5" class="bg-white dark:bg-slate-900">Lề Nhỏ</option>
+                                            <option value="10" class="bg-white dark:bg-slate-900">Lề Rộng</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -749,37 +764,43 @@
                             <div id="wordFileList" class="space-y-2"></div>
                         </div>
 
-                        <div id="wordCard" class="glass-card p-4 sm:p-6 rounded-2xl space-y-5 border border-slate-200 dark:border-blue-500/20">
-                            <div class="flex items-center space-x-2 text-slate-900 dark:text-white font-bold text-sm">
-                                <i data-lucide="file-type-2" class="w-4 h-4 text-sapphire-500"></i>
-                                <span>Cấu hình chuyển đổi Word</span>
+                        <div id="wordCard" class="glass-card config-panel p-4 sm:p-6 rounded-2xl space-y-5 border border-slate-200 dark:border-blue-500/20" data-default-collapsed="true">
+                            <div class="config-panel-header">
+                                <div class="flex items-center space-x-2 text-slate-900 dark:text-white font-bold text-sm">
+                                    <i data-lucide="file-type-2" class="w-4 h-4 text-sapphire-500"></i>
+                                    <span>Cấu hình chuyển đổi Word</span>
+                                </div>
+                                <button type="button" class="config-panel-toggle" aria-label="Mở/thu gọn cấu hình" aria-expanded="false">
+                                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                                </button>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
-                                <div>
-                                    <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Chế độ Word</label>
-                                    <select id="wordMode" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
-                                        <option value="layout">Giữ bố cục gốc</option>
-                                        <option value="edit" selected>Word dễ chỉnh sửa</option>
-                                        <option value="plain">Văn bản thuần</option>
-                                    </select>
+                            <div class="config-panel-body">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Chế độ Word</label>
+                                        <select id="wordMode" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                            <option value="layout">Giữ bố cục gốc</option>
+                                            <option value="edit" selected>Word dễ chỉnh sửa</option>
+                                            <option value="plain">Văn bản thuần</option>
+                                        </select>
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Công cụ OCR cho trang scan</label>
+                                        <select id="wordOcr" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                            <option value="tess" selected>Tesseract.js — chạy cục bộ, không gửi tài liệu</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Ngôn ngữ OCR</label>
+                                        <select id="wordLang" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                            <option value="vie+eng" selected>Tiếng Việt + Tiếng Anh</option>
+                                            <option value="vie">Tiếng Việt</option>
+                                            <option value="eng">Tiếng Anh</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="md:col-span-2">
-                                    <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Công cụ OCR cho trang scan</label>
-                                    <select id="wordOcr" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
-                                        <option value="tess" selected>Tesseract.js — chạy cục bộ, không gửi tài liệu</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Ngôn ngữ OCR</label>
-                                    <select id="wordLang" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
-                                        <option value="vie+eng" selected>Tiếng Việt + Tiếng Anh</option>
-                                        <option value="vie">Tiếng Việt</option>
-                                        <option value="eng">Tiếng Anh</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <p id="wordOcrNote" class="text-[11px] leading-relaxed text-slate-500 dark:text-blue-300/80">OCR cục bộ nhận dạng tốt chữ in, không đáng tin với chữ viết tay; bảng và công thức trên trang scan cần chỉnh tay. Lần OCR đầu cần Internet để tải dữ liệu ngôn ngữ (không gửi tài liệu của bạn).</p>
+                                <p id="wordOcrNote" class="text-[11px] leading-relaxed text-slate-500 dark:text-blue-300/80">OCR cục bộ nhận dạng tốt chữ in, không đáng tin với chữ viết tay; bảng và công thức trên trang scan cần chỉnh tay. Lần OCR đầu cần Internet để tải dữ liệu ngôn ngữ (không gửi tài liệu của bạn).</p>
 
                             <div class="flex gap-2">
                                 <button type="button" id="wordConvertBtn" class="flex-1 py-3.5 sm:py-4 rounded-2xl sapphire-gradient-btn text-white font-extrabold text-xs sm:text-sm tracking-wide uppercase flex items-center justify-center space-x-2 disabled:opacity-60">
@@ -826,6 +847,7 @@
                             </div>
                         </div>
                     </div>
+                </div>
                 </div>
 
                 <!-- TAB 3: PDF EDIT & MERGE AREA (SYNCHRONIZED UI WITH TAB 1) -->
@@ -891,37 +913,44 @@
                         </div>
 
                         <!-- PDF SETTINGS PANEL TAB CHỈNH SỬA PDF -->
-                        <div class="glass-card p-4 sm:p-6 rounded-2xl space-y-5 border border-slate-200 dark:border-blue-500/20">
-                            <div class="flex items-center space-x-2 text-slate-900 dark:text-white font-bold text-sm">
-                                <i data-lucide="sliders" class="w-4 h-4 text-sapphire-500"></i>
-                                <span>Cấu hình File PDF</span>
+                        <div class="glass-card config-panel p-4 sm:p-6 rounded-2xl space-y-5 border border-slate-200 dark:border-blue-500/20" data-default-collapsed="true">
+                            <div class="config-panel-header">
+                                <div class="flex items-center space-x-2 text-slate-900 dark:text-white font-bold text-sm">
+                                    <i data-lucide="sliders" class="w-4 h-4 text-sapphire-500"></i>
+                                    <span>Cấu hình File PDF</span>
+                                </div>
+                                <button type="button" class="config-panel-toggle" aria-label="Mở/thu gọn cấu hình" aria-expanded="false">
+                                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                                </button>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
-                                <div>
-                                    <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Khổ Giấy</label>
-                                    <select id="pdfPageSizeMerge" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
-                                        <option value="a4" selected class="bg-white dark:bg-slate-900">Khổ A4</option>
-                                        <option value="letter" class="bg-white dark:bg-slate-900">Khổ US Letter</option>
-                                        <option value="fit" class="bg-white dark:bg-slate-900">Giữ nguyên kích thước gốc trang PDF</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Hướng Trang</label>
-                                    <select id="pdfPageOrientationMerge" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
-                                        <option value="auto" selected class="bg-white dark:bg-slate-900">Tự Động Theo Trang Gốc</option>
-                                        <option value="portrait" class="bg-white dark:bg-slate-900">Trang Dọc</option>
-                                        <option value="landscape" class="bg-white dark:bg-slate-900">Trang Ngang</option>
-                                        <option value="auto" class="bg-white dark:bg-slate-900">Tự Động Theo Tỷ Lệ Ảnh</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Khoảng Cách Lề</label>
-                                    <select id="pdfPageMarginMerge" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
-                                        <option value="0" selected class="bg-white dark:bg-slate-900">Không Có Lề</option>
-                                        <option value="5" class="bg-white dark:bg-slate-900">Lề Nhỏ</option>
-                                        <option value="10" class="bg-white dark:bg-slate-900">Lề Rộng</option>
-                                    </select>
+                            <div class="config-panel-body">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Khổ Giấy</label>
+                                        <select id="pdfPageSizeMerge" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                            <option value="a4" selected class="bg-white dark:bg-slate-900">Khổ A4</option>
+                                            <option value="letter" class="bg-white dark:bg-slate-900">Khổ US Letter</option>
+                                            <option value="fit" class="bg-white dark:bg-slate-900">Giữ nguyên kích thước gốc trang PDF</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Hướng Trang</label>
+                                        <select id="pdfPageOrientationMerge" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                            <option value="auto" selected class="bg-white dark:bg-slate-900">Tự Động Theo Trang Gốc</option>
+                                            <option value="portrait" class="bg-white dark:bg-slate-900">Trang Dọc</option>
+                                            <option value="landscape" class="bg-white dark:bg-slate-900">Trang Ngang</option>
+                                            <option value="auto" class="bg-white dark:bg-slate-900">Tự Động Theo Tỷ Lệ Ảnh</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block font-semibold text-slate-700 dark:text-blue-200/80 mb-1.5">Khoảng Cách Lề</label>
+                                        <select id="pdfPageMarginMerge" class="w-full glass-input p-2.5 sm:p-3 rounded-xl font-medium">
+                                            <option value="0" selected class="bg-white dark:bg-slate-900">Không Có Lề</option>
+                                            <option value="5" class="bg-white dark:bg-slate-900">Lề Nhỏ</option>
+                                            <option value="10" class="bg-white dark:bg-slate-900">Lề Rộng</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1365,15 +1394,11 @@
         const LBL = { connecting: 'Đang kết nối…', ok: 'Đã đồng bộ', syncing: 'Đang đồng bộ…', offline: 'Mất kết nối', pending: 'Chờ đồng bộ' };
         let sync = 'connecting';
         function setSync(s, note) {
-            sync = s; let el = $('wiky-sync');
-            if (!el) {
-                const host = $('hero-stat-files'); if (!host) return;
-                el = document.createElement('button'); el.id = 'wiky-sync'; el.type = 'button';
-                el.style.cssText = 'display:block;min-height:24px;font-size:11px;opacity:.75;background:none;border:0;cursor:pointer;color:inherit';
-                el.title = 'Bấm để thử đồng bộ lại'; el.onclick = () => window.WikyStats && window.WikyStats.flush();
-                host.insertAdjacentElement('afterend', el);
+            sync = s;
+            const el = $('wiky-sync');
+            if (el) {
+                el.remove();
             }
-            el.textContent = '● ' + LBL[s]; if (note) el.title = note;
         }
         window.updateStatsDisplay = (v) => { const e = $('hero-stat-files'); if (e) e.innerText = (typeof v === 'number') ? v.toLocaleString('vi-VN') : '…'; };
         window.updateStatsDisplay(null); setSync('connecting');
@@ -1546,6 +1571,72 @@
         }
 
         /* INITIALIZATION */
+        function initCompactConfigPanels() {
+            const panels = document.querySelectorAll('.config-panel');
+            panels.forEach((panel) => {
+                const body = panel.querySelector('.config-panel-body');
+                const toggle = panel.querySelector('.config-panel-toggle');
+                if (!body || !toggle) return;
+                const shouldCollapse = window.matchMedia('(max-width: 767px)').matches;
+                const collapsed = shouldCollapse && panel.dataset.defaultCollapsed !== 'false';
+                panel.classList.toggle('is-collapsed', collapsed);
+                toggle.setAttribute('aria-expanded', String(!collapsed));
+                toggle.innerHTML = collapsed
+                    ? '<i data-lucide="chevron-right" class="w-4 h-4"></i>'
+                    : '<i data-lucide="chevron-down" class="w-4 h-4"></i>';
+                body.hidden = collapsed;
+                if (window.lucide?.createIcons) window.lucide.createIcons();
+            });
+        }
+
+        document.addEventListener('click', (event) => {
+            const toggle = event.target.closest('.config-panel-toggle');
+            if (!toggle) return;
+            const panel = toggle.closest('.config-panel');
+            if (!panel) return;
+            const body = panel.querySelector('.config-panel-body');
+            if (!body) return;
+            const collapsed = panel.classList.contains('is-collapsed');
+            panel.classList.toggle('is-collapsed', !collapsed);
+            const nextCollapsed = !collapsed;
+            toggle.setAttribute('aria-expanded', String(!nextCollapsed));
+            toggle.innerHTML = nextCollapsed
+                ? '<i data-lucide="chevron-right" class="w-4 h-4"></i>'
+                : '<i data-lucide="chevron-down" class="w-4 h-4"></i>';
+            body.hidden = nextCollapsed;
+            if (window.lucide?.createIcons) window.lucide.createIcons();
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.matchMedia('(max-width: 767px)').matches) {
+                document.querySelectorAll('.config-panel').forEach((panel) => {
+                    if (panel.dataset.defaultCollapsed !== 'false') {
+                        panel.classList.add('is-collapsed');
+                        const body = panel.querySelector('.config-panel-body');
+                        const toggle = panel.querySelector('.config-panel-toggle');
+                        if (toggle) {
+                            toggle.setAttribute('aria-expanded', 'false');
+                            toggle.innerHTML = '<i data-lucide="chevron-right" class="w-4 h-4"></i>';
+                        }
+                        if (body) body.hidden = true;
+                    }
+                });
+                if (window.lucide?.createIcons) window.lucide.createIcons();
+            } else {
+                document.querySelectorAll('.config-panel').forEach((panel) => {
+                    panel.classList.remove('is-collapsed');
+                    const body = panel.querySelector('.config-panel-body');
+                    const toggle = panel.querySelector('.config-panel-toggle');
+                    if (toggle) {
+                        toggle.setAttribute('aria-expanded', 'true');
+                        toggle.innerHTML = '<i data-lucide="chevron-down" class="w-4 h-4"></i>';
+                    }
+                    if (body) body.hidden = false;
+                });
+                if (window.lucide?.createIcons) window.lucide.createIcons();
+            }
+        });
+
         window.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('anhsangpdf-theme');
             if (savedTheme === 'dark' || (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
@@ -1554,6 +1645,7 @@
             initSortable();
             buildFilterUI();
             initScrollReveal();
+            initCompactConfigPanels();
             initChibiEyeTracking();
             /* số liệu do Firestore onSnapshot cấp */
             startChibiAutoSpeech();
@@ -1711,7 +1803,7 @@
             const validFiles = incoming.filter(file => file.type.startsWith('image/') && ['image/jpeg','image/png','image/webp','image/gif','image/bmp'].includes(file.type));
             const rejected = incoming.length - validFiles.length;
             const remaining = Math.max(0, MAX_IMAGE_COUNT - imagesData.length);
-            const queue = validFiles.slice(0, remaining);
+            const queue = validFiles.slice(0, remaining).map((file, index) => ({ file, selectionOrder: imagesData.length + index }));
             let added = 0;
             let failed = 0;
 
@@ -1720,10 +1812,11 @@
                 return;
             }
             speakChibi(`Đang đọc ${queue.length} ảnh tài liệu của bạn...`);
-            for (const file of queue) {
+            for (const [index, itemHolder] of queue.entries()) {
+                const file = itemHolder.file;
                 if (file.size > MAX_IMAGE_BYTES) { failed++; continue; }
                 try {
-                    const item = await processSingleImage(file);
+                    const item = await processSingleImage(file, imagesData.length + index);
                     imagesData.push(item);
                     added++;
                 } catch (err) {
@@ -1731,6 +1824,7 @@
                     console.error('Image import failed:', file.name, err);
                 }
             }
+            imagesData.sort((a, b) => (a.selectionOrder ?? 0) - (b.selectionOrder ?? 0));
             renderImageGrid();
             
             if (added > 0) {
@@ -1740,7 +1834,7 @@
             }
         }
 
-        function processSingleImage(file) {
+        function processSingleImage(file, selectionOrder = Date.now()) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = async (e) => {
@@ -1750,6 +1844,7 @@
                         resolve({
                             id: 'img_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
                             name: file.name,
+                            selectionOrder,
                             originalSrc: e.target.result,
                             filterSrc: e.target.result,
                             processedSrc: e.target.result,
@@ -1843,8 +1938,9 @@
             const item = imagesData[index];
             if (!item) return;
             if (imagesData.length >= MAX_IMAGE_COUNT) { speakChibi(`Chỉ hỗ trợ tối đa ${MAX_IMAGE_COUNT} trang.`); return; }
-            const copy = {...item, id: 'img_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8), name: item.name.replace(/\.[^.]+$/, '') + ' - bản sao'};
+            const copy = {...item, id: 'img_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8), selectionOrder: Date.now() + Math.random(), name: item.name.replace(/\.[^.]+$/, '') + ' - bản sao'};
             imagesData.splice(index + 1, 0, copy);
+            imagesData.sort((a, b) => (a.selectionOrder ?? 0) - (b.selectionOrder ?? 0));
             renderImageGrid();
             speakChibi('Đã nhân bản trang tài liệu thành công.');
         }
