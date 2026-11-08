@@ -1358,76 +1358,118 @@
 
     <!-- FIREBASE INTEGRATION ENGINE -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, updateDoc, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        /* WIKYFILE STATS (không đăng nhập, không Cloud Functions).
+           Client chỉ ghi qua Firestore Rules chặt (xem hướng dẫn); Admin xem/sửa trực tiếp trong Firebase Console. */
+        const G = "https://www.gstatic.com/firebasejs/11.6.1/";
+        const $ = (id) => document.getElementById(id);
+        const LBL = { connecting: 'Đang kết nối…', ok: 'Đã đồng bộ', syncing: 'Đang đồng bộ…', offline: 'Mất kết nối', pending: 'Chờ đồng bộ' };
+        let sync = 'connecting';
+        function setSync(s, note) {
+            sync = s; let el = $('wiky-sync');
+            if (!el) {
+                const host = $('hero-stat-files'); if (!host) return;
+                el = document.createElement('button'); el.id = 'wiky-sync'; el.type = 'button';
+                el.style.cssText = 'display:block;min-height:24px;font-size:11px;opacity:.75;background:none;border:0;cursor:pointer;color:inherit';
+                el.title = 'Bấm để thử đồng bộ lại'; el.onclick = () => window.WikyStats && window.WikyStats.flush();
+                host.insertAdjacentElement('afterend', el);
+            }
+            el.textContent = '● ' + LBL[s]; if (note) el.title = note;
+        }
+        window.updateStatsDisplay = (v) => { const e = $('hero-stat-files'); if (e) e.innerText = (typeof v === 'number') ? v.toLocaleString('vi-VN') : '…'; };
+        window.updateStatsDisplay(null); setSync('connecting');
 
-        const myFirebaseConfig = typeof __firebase_config !== 'undefined' && __firebase_config 
-            ? JSON.parse(__firebase_config)
-            : {
-                apiKey: "AIzaSyAOepsJ2YYXH1ksFT020Z94WTGBhTm9MXc",
-                authDomain: "anhsangpdf-studio.firebaseapp.com",
-                projectId: "anhsangpdf-studio",
-                storageBucket: "anhsangpdf-studio.firebasestorage.app",
-                messagingSenderId: "526264978994",
-                appId: "1:526264978994:web:f6accb43901b8c1bb8362b"
-            };
+        let initializeApp, getApps, getAuth, signInAnonymously, onAuthStateChanged, getFirestore, doc, onSnapshot, writeBatch, increment, serverTimestamp;
+        try {
+            ({ initializeApp, getApps } = await import(G + "firebase-app.js"));
+            ({ getAuth, signInAnonymously, onAuthStateChanged } = await import(G + "firebase-auth.js"));
+            ({ getFirestore, doc, onSnapshot, writeBatch, increment, serverTimestamp } = await import(G + "firebase-firestore.js"));
+        } catch (e) { setSync('offline', 'Không tải được Firebase: ' + (e && e.message || e)); throw e; }
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'anhsangpdf-app-default';
-        let db = null;
-        let auth = null;
-        let statsDocRef = null;
+        const cfg = typeof __firebase_config !== 'undefined' && __firebase_config ? JSON.parse(__firebase_config) : {
+            apiKey: "AIzaSyAOepsJ2YYXH1ksFT020Z94WTGBhTm9MXc", authDomain: "anhsangpdf-studio.firebaseapp.com",
+            projectId: "anhsangpdf-studio", storageBucket: "anhsangpdf-studio.firebasestorage.app",
+            messagingSenderId: "526264978994", appId: "1:526264978994:web:f6accb43901b8c1bb8362b"
+        };
+        const LEGACY_APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'anhsangpdf-app-default';
+        const APP_CHECK_SITE_KEY = "6LfntRUuAAAAAPQiG7MvGiJ19x-tXnPvDsxEjnjw"; // (tuỳ chọn) reCAPTCHA v3 site key nếu bật App Check
+        const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+        if (APP_CHECK_SITE_KEY) {
+            const { initializeAppCheck, ReCaptchaV3Provider } = await import(G + "firebase-app-check.js");
+            initializeAppCheck(app, { provider: new ReCaptchaV3Provider(APP_CHECK_SITE_KEY), isTokenAutoRefreshEnabled: true });
+        }
+        const auth = getAuth(app), db = getFirestore(app);
+        const ready = new Promise((res) => onAuthStateChanged(auth, async (u) => {
+            if (u) res(u); else { try { await signInAnonymously(auth); } catch (e) { setSync('offline', 'Chưa bật Anonymous Auth?'); } }
+        }));
 
-        async function initFirebaseStats() {
+        /* Realtime: số trang tổng */
+        let hasCounter = false;
+        onSnapshot(doc(db, 'publicStats', 'counter'), (s) => {
+            if (s.exists() && typeof s.data().totalPages === 'number') {
+                hasCounter = true; window.updateStatsDisplay(s.data().totalPages);
+                if (sync !== 'pending' && sync !== 'syncing') setSync('ok');
+            } else {
+                // Chưa tạo publicStats/counter: chỉ ĐỌC số cũ để hiển thị, không ghi đè, không số giả
+                onSnapshot(doc(db, 'artifacts', LEGACY_APP_ID, 'public', 'data', 'stats', 'counter'), (l) => {
+                    if (!hasCounter && l.exists() && typeof l.data().totalFiles === 'number') window.updateStatsDisplay(l.data().totalFiles);
+                }, () => {});
+            }
+        }, () => setSync('offline'));
+        window.addEventListener('offline', () => setSync('offline'));
+        window.addEventListener('online', () => flush());
+
+        /* Hàng đợi IndexedDB + operationId duy nhất */
+        const mem = new Map();
+        const idb = () => new Promise((res, rej) => { const r = indexedDB.open('wikyfile-stats', 1); r.onupgradeneeded = () => r.result.createObjectStore('outbox', { keyPath: 'operationId' }); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+        async function box(mode, f) {
             try {
-                const app = initializeApp(myFirebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-
-                await signInAnonymously(auth);
-                statsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'stats', 'counter');
-
-                onSnapshot(statsDocRef, (snap) => {
-                    if (snap.exists()) {
-                        const data = snap.data();
-                        if (data && typeof data.totalFiles === 'number') {
-                            window.updateStatsDisplay(data.totalFiles);
-                            try { localStorage.setItem('anhsangpdf_created_count', data.totalFiles.toString()); } catch(e){}
-                        }
-                    } else {
-                        setDoc(statsDocRef, { totalFiles: 43, updatedAt: new Date().toISOString() }, { merge: true });
-                        window.updateStatsDisplay(43);
-                    }
-                }, (err) => {
-                    console.warn("Đang dùng dữ liệu LocalStorage dự phòng:", err);
-                });
-
-            } catch (error) {
-                console.warn("Chưa cấu hình API Key Firebase thực tế, đang chạy chế độ offline:", error);
+                const d = await idb();
+                return await new Promise((res, rej) => { const t = d.transaction('outbox', mode); const q = f(t.objectStore('outbox')); t.oncomplete = () => res(q && q.result); t.onerror = () => rej(t.error); });
+            } catch (e) {
+                if (mode === 'readonly') return [...mem.values()];
+                f({ put: (v) => mem.set(v.operationId, v), delete: (k) => mem.delete(k) });
             }
         }
-
-        window.incrementFirebaseCounter = async function(count) {
-            if (statsDocRef && auth?.currentUser) {
-                try {
-                    await updateDoc(statsDocRef, {
-                        totalFiles: increment(count),
-                        updatedAt: new Date().toISOString()
+        const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'op-' + Date.now() + '-' + Math.random().toString(36).slice(2, 10));
+        const timeout = (ms) => new Promise((_, rej) => setTimeout(() => rej({ code: 'timeout' }), ms));
+        let flushing = false;
+        async function flush() {
+            if (flushing) return; flushing = true;
+            try {
+                const items = (await box('readonly', (s) => s.getAll())) || [];
+                if (!items.length) { setSync(navigator.onLine ? 'ok' : 'offline'); return; }
+                if (!navigator.onLine) { setSync('pending'); return; }
+                setSync('syncing'); const u = await ready;
+                for (const ev of items) {
+                    const b = writeBatch(db);
+                    b.set(doc(db, 'usageEvents', ev.operationId), { operationId: ev.operationId, operationType: ev.operationType, outputType: ev.outputType, pageCount: ev.pageCount, createdAt: serverTimestamp(), uid: u.uid });
+                    b.update(doc(db, 'publicStats', 'counter'), {
+                        totalPages: increment(ev.pageCount), totalExports: increment(1),
+                        [ev.outputType === 'docx' ? 'exportsWord' : 'exportsPdf']: increment(1),
+                        lastOpId: ev.operationId, updatedAt: serverTimestamp()
                     });
-                    return true;
-                } catch (e) {
-                    try {
-                        await setDoc(statsDocRef, { totalFiles: 43 + count, updatedAt: new Date().toISOString() }, { merge: true });
-                        return true;
-                    } catch (err) {
-                        console.warn("Không thể ghi dữ liệu lên Firebase:", err);
+                    try { await Promise.race([b.commit(), timeout(15000)]); await box('readwrite', (s) => s.delete(ev.operationId)); }
+                    catch (e) {
+                        // permission-denied = mã giao dịch đã được cộng trước đó (hoặc dữ liệu sai luật) → bỏ, không cộng lại
+                        if (e && (e.code === 'permission-denied' || e.code === 'already-exists')) await box('readwrite', (s) => s.delete(ev.operationId));
+                        else throw e;
                     }
                 }
-            }
-            return false;
+                setSync('ok');
+            } catch (e) { console.warn('Đồng bộ thống kê thất bại, sẽ thử lại:', e); setSync('pending', 'Lỗi: ' + (e && (e.code || e.message))); }
+            finally { flushing = false; }
+        }
+        window.WikyStats = {
+            // Chỉ gọi SAU KHI tệp đầu ra đã tạo thành công; pages lấy từ kết quả thực tế.
+            async record(operationType, outputType, pages) {
+                pages = Math.floor(Number(pages));
+                if (!(pages > 0) || pages > 5000) return false;
+                await box('readwrite', (s) => s.put({ operationId: uid(), operationType, outputType, pageCount: pages }));
+                setSync('pending'); flush(); return true;
+            },
+            flush
         };
-
-        initFirebaseStats();
+        flush();
     </script>
 
     <!-- JAVASCRIPT APP LOGIC -->
@@ -1513,7 +1555,7 @@
             buildFilterUI();
             initScrollReveal();
             initChibiEyeTracking();
-            updateDashboardStats(0);
+            /* số liệu do Firestore onSnapshot cấp */
             startChibiAutoSpeech();
         });
 
@@ -1814,24 +1856,13 @@
             speakChibi("Đã dọn dẹp sạch danh sách các trang!");
         }
 
-        /* NÂNG CẤP LƯU DATA TỔNG SỐ TRANG/PDF VÀO FIREBASE HOẶC FALLBACK LOCALSTORAGE */
-        window.updateStatsDisplay = function(val) {
-            const heroStatFiles = document.getElementById('hero-stat-files');
-            if (heroStatFiles) heroStatFiles.innerText = val.toLocaleString('vi-VN');
-        };
-
-        async function updateDashboardStats(addedCount = 0) {
-            let storedVal = parseInt(localStorage.getItem('anhsangpdf_created_count') || '43', 10);
-            if (addedCount > 0) {
-                storedVal += addedCount;
-                try { localStorage.setItem('anhsangpdf_created_count', storedVal.toString()); } catch(e) {}
-                
-                if (typeof window.incrementFirebaseCounter === 'function') {
-                    await window.incrementFirebaseCounter(addedCount);
-                }
-            }
-            window.updateStatsDisplay(storedVal);
+        /* THỐNG KÊ THỐNG NHẤT: mọi luồng xuất đều gọi WikyStats.record (module Firebase) sau khi xuất thành công */
+        async function updateDashboardStats(pages = 0, opType = 'pdf_edit', outType = 'pdf') {
+            if (!(pages > 0) || !window.WikyStats) return false;
+            try { return await window.WikyStats.record(opType, outType, pages); }
+            catch (e) { console.warn('Không ghi được thống kê:', e); return false; }
         }
+        window.updateDashboardStats = updateDashboardStats;
 
         /* 4. SCAN IMAGE FILTERS ENGINE */
         function applyScanFilterToCanvas(ctx, width, height, filterType) {
@@ -2181,7 +2212,7 @@
                 customName = customName.replace(/[\\/:*?"<>|]+/g, '_').replace(/\.pdf$/i, '').slice(0, 100) || 'WikyFile';
                 pdf.save(customName + '.pdf');
                 
-                await updateDashboardStats(imagesData.length);
+                await updateDashboardStats(imagesData.length, 'image_to_pdf', 'pdf');
                 speakChibi(`Tuyệt vời! Đã xuất xong ${imagesData.length} trang thành tệp ${customName}.pdf cho bạn.`);
             } catch (err) {
                 console.error('PDF export error:', err);
@@ -2496,7 +2527,7 @@
                 status(`Hoàn tất! Đã xuất tệp ${userFileName}.pdf gồm ${pdfPagesList.length} trang.`, 'success');
 
                 if (window.updateDashboardStats) {
-                    await window.updateDashboardStats(pdfPagesList.length);
+                    await window.updateDashboardStats(pdfPagesList.length, 'pdf_edit', 'pdf');
                 }
                 if (window.speakChibi) window.speakChibi(`Tuyệt vời! Đã ghép và xuất xong tệp ${userFileName}.pdf cho bạn.`);
 
@@ -3011,6 +3042,7 @@ window.WF = {
       say('Đang tạo tệp Word...');
       download(await buildDocx($('wordMode').value), safeName($('wordOutName').value || (W.doc && W.doc.name)) + '.docx');
       say('Đã xuất tệp .docx.', 'success');
+      if (window.updateDashboardStats && W.doc && W.doc.pages) window.updateDashboardStats(W.doc.pages.length, 'pdf_to_word', 'docx');
     } catch (e) { say('Không thể tạo DOCX: ' + (e.message || e) + '. Kiểm tra mạng (tải thư viện docx) rồi thử lại.', 'error'); }
     finally { btn.disabled = false; }
   }
